@@ -57,7 +57,7 @@ if (isset($_GET['action'])) {
                 }
                 break;
             case 'readOne':
-                if (!$producto->setId($_POST['idProducto'])) {
+                if (!$producto->setId($_POST['idMueble'])) {
                     $result['error'] = $producto->getDataError();
                 } elseif ($result['dataset'] = $producto->readOne()) {
                     $result['status'] = 1;
@@ -68,21 +68,22 @@ if (isset($_GET['action'])) {
             case 'updateRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$producto->setId($_POST['idProducto']) or
-                    !$producto->setFilename() or
-                    !$producto->setNombre($_POST['nombreProducto']) or
-                    !$producto->setDescripcion($_POST['descripcionProducto']) or
-                    !$producto->setPrecio($_POST['precioProducto']) or
-                    !$producto->setCategoria($_POST['categoriaProducto']) or
-                    !$producto->setEstado(isset($_POST['estadoProducto']) ? 1 : 0) or
-                    !$producto->setImagen($_FILES['imagenProducto'], $producto->getFilename())
+                    !$producto->setId($_POST['idMueble']) or
+                    !$producto->setNombre($_POST['nombreMueble']) or
+                    !$producto->setDescripcion($_POST['descripcionMueble']) or
+                    !$producto->setPrecio($_POST['precioMueble']) or
+                    !$producto->setStock($_POST['stockMueble']) or
+                    !$producto->setCategoria($_POST['categoriaMueble']) or
+                    !$producto->setColor($_POST['colorMueble']) or
+                    !$producto->setMaterial($_POST['materialMueble']) or
+                    !$producto->setImagen($_FILES['imagenMueble'], $producto->getFilename())
                 ) {
                     $result['error'] = $producto->getDataError();
                 } elseif ($producto->updateRow()) {
                     $result['status'] = 1;
                     $result['message'] = 'Producto modificado correctamente';
                     // Se asigna el estado del archivo después de actualizar.
-                    $result['fileStatus'] = Validator::changeFile($_FILES['imagenProducto'], $producto::RUTA_IMAGEN, $producto->getFilename());
+                    $result['fileStatus'] = Validator::changeFile($_FILES['imagenMueble'], $producto::RUTA_IMAGEN, $producto->getFilename());
                 } else {
                     $result['error'] = 'Ocurrió un problema al modificar el producto';
                 }

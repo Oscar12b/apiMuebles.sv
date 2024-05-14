@@ -82,7 +82,7 @@ class ProductoData extends ProductoHandler
 
     public function setImagen($file, $filename = null)
     {
-        if (Validator::validateImageFile($file, 1500, 1500)) {
+        if (Validator::validateImageFile($file, 2500, 2500)) {
             $this->imagen = Validator::getFileName();
             return true;
         } elseif (Validator::getFileError()) {
@@ -134,7 +134,7 @@ class ProductoData extends ProductoHandler
     public function setFilename()
     {
         if ($data = $this->readFilename()) {
-            $this->filename = $data['imagen_producto'];
+            $this->filename = $data['imagen'];
             return true;
         } else {
             $this->data_error = 'Producto inexistente';

@@ -64,7 +64,7 @@ class ProductoHandler
 
     public function readOne()
     {
-        $sql = 'SELECT id_mueble,imagen, nombre_mueble, descripcion_mueble, precio, stock, id_categoria, id_color, id_material, id_administrador
+        $sql = 'SELECT id_mueble as idMueble, imagen as imagenMueble, nombre_mueble as nombreMueble, descripcion_mueble as descripcionMueble, precio as precioMueble, stock as stockMueble, id_categoria as categoriaMueble, id_color as colorMueble, id_material as materialMueble 
                 FROM tb_muebles
                 WHERE id_mueble = ?';
         $params = array($this->id);
