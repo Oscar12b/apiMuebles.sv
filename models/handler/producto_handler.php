@@ -83,9 +83,9 @@ class ProductoHandler
     public function updateRow()
     {
         $sql = 'UPDATE tb_muebles
-                SET imagen_producto = ?, nombre_producto = ?, descripcion_producto = ?, precio_producto = ?, estado_producto = ?, id_categoria = ?
-                WHERE id_producto = ?';
-        $params = array($this->imagen, $this->nombre, $this->descripcion, $this->precio, $this->estado, $this->categoria, $this->id);
+            SET imagen = ?, nombre_mueble = ?, descripcion_mueble = ?, precio = ?, stock = ?, id_categoria = ?, id_color = ? ,id_material = ?
+            WHERE id_mueble = ?';
+        $params = array($this-> imagen, $this->nombre, $this->descripcion, $this->precio, $this->stock, $this->id_categoria, $this->id_color, $this->id_material, $this->id);
         return Database::executeRow($sql, $params);
     }
 
