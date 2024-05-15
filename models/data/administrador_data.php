@@ -1,8 +1,8 @@
 <?php
 // Se incluye la clase para validar los datos de entrada.
-require_once('../../helpers/validator.php');
+require_once ('../../helpers/validator.php');
 // Se incluye la clase padre.
-require_once('../../models/handler/administrador_handler.php');
+require_once ('../../models/handler/administrador_handler.php');
 /*
  *  Clase para manejar el encapsulamiento de los datos de la tabla USUARIO.
  */
@@ -110,6 +110,17 @@ class AdministradorData extends AdministradorHandler
             return true;
         } else {
             $this->data_error = 'El identificador del Cliente es incorrecto';
+            return false;
+        }
+    }
+
+    public function setTelefono($value)
+    {
+        if (Validator::validatePhone($value)) {
+            $this->telefono = $value;
+            return true;
+        } else {
+            $this->data_error = 'El número de teléfono no es válido';
             return false;
         }
     }

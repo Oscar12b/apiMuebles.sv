@@ -1,6 +1,6 @@
 <?php
 // Se incluye la clase del modelo.
-require_once('..\..\models\data\administrador_data.php');
+require_once ('..\..\models\data\administrador_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
@@ -25,26 +25,29 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'No hay coincidencias';
                 }
                 break;
-            case 'createRow':
+            case 'createRow'://CHECK [X]
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$administrador->setNombre($_POST['nombreAdministrador']) or
-                    !$administrador->setApellido($_POST['apellidoAdministrador']) or
-                    !$administrador->setCorreo($_POST['correoAdministrador']) or
-                    !$administrador->setAlias($_POST['aliasAdministrador']) or
-                    !$administrador->setClave($_POST['claveAdministrador'])
+                    !$administrador->setNombre($_POST['nombreAdmin']) or
+                    !$administrador->setApellido($_POST['apellidoAdmiin']) or
+                    !$administrador->setCorreo($_POST['correoAdmin']) or
+                    !$administrador->setAlias($_POST['aliasAdmin']) or
+                    !$administrador->setClave($_POST['claveAdmin']) or
+                    !$administrador->setTelefono($_POST['telefonoAdmin'])
                 ) {
                     $result['error'] = $administrador->getDataError();
-                } elseif ($_POST['claveAdministrador'] != $_POST['confirmarClave']) {
+                } elseif ($_POST['claveAdmin'] != $_POST['confirmarClave']) {
                     $result['error'] = 'Contraseñas diferentes';
                 } elseif ($administrador->createRow()) {
                     $result['status'] = 1;
                     $result['message'] = 'Administrador creado correctamente';
                 } else {
                     $result['error'] = 'Ocurrió un problema al crear el administrador';
+                    $result['dataset'] = $_POST['nombreAdmin'];
                 }
                 break;
-            case 'readAll':
+
+            case 'readAll'://CHECK [x]
                 if ($result['dataset'] = $administrador->readAll()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
@@ -52,8 +55,8 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'No existen administradores registrados';
                 }
                 break;
-            case 'readOne':
-                if (!$administrador->setId($_POST['idAdministrador'])) {
+            case 'readOne'://CHECK [X]
+                if (!$administrador->setId($_POST['idAdmin'])) {
                     $result['error'] = 'Administrador incorrecto';
                 } elseif ($result['dataset'] = $administrador->readOne()) {
                     $result['status'] = 1;
@@ -61,13 +64,15 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'Administrador inexistente';
                 }
                 break;
-            case 'updateRow':
+            case 'updateRow'://CHECK [x]
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$administrador->setId($_POST['idAdministrador']) or
-                    !$administrador->setNombre($_POST['nombreAdministrador']) or
-                    !$administrador->setApellido($_POST['apellidoAdministrador']) or
-                    !$administrador->setCorreo($_POST['correoAdministrador'])
+                    !$administrador->setId($_POST['idAdmin']) or
+                    !$administrador->setNombre($_POST['nombreAdmin']) or
+                    !$administrador->setApellido($_POST['apellidoAdmiin']) or
+                    !$administrador->setCorreo($_POST['correoAdmin']) or
+                    !$administrador->setAlias($_POST['aliasAdmin']) or
+                    !$administrador->setTelefono($_POST['telefonoAdmin'])
                 ) {
                     $result['error'] = $administrador->getDataError();
                 } elseif ($administrador->updateRow()) {
@@ -77,16 +82,16 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'Ocurrió un problema al modificar el administrador';
                 }
                 break;
-            case 'deleteRow':
-                if ($_POST['idAdministrador'] == $_SESSION['idAdministrador']) {
+            case 'deleteRow'://CHECK [x]
+                if ($_POST['idAdmin'] == $_SESSION['idAdministrador']) {
                     $result['error'] = 'No se puede eliminar a sí mismo';
-                } elseif (!$administrador->setId($_POST['idAdministrador'])) {
+                } elseif (!$administrador->setId($_POST['idAdmin'])) {
                     $result['error'] = $administrador->getDataError();
                 } elseif ($administrador->deleteRow()) {
                     $result['status'] = 1;
                     $result['message'] = 'Administrador eliminado correctamente';
                 } else {
-                    $result['error'] = 'Ocurrió un problema al eliminar el administrador';
+                    $result['error'] = 'No se puede eliminar al administrador por que ha agregado muebles';
                 }
                 break;
             case 'getUser':
@@ -129,40 +134,39 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'Ocurrió un problema al modificar el perfil';
                 }
                 break;
-                  //********acciones para rellenar los clientes ********/
-                case 'readAllCliente':
-                    if ($result['dataset'] = $administrador->readAllCliente()) {
-                        $result['status'] = 1;
-                        $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
-                    } else {
-                        $result['error'] = 'No existen Clientes registrados';
-                    }
-                    break;
-                case 'readOneCliente':
-                    if (!$administrador->setIdCliente($_POST['idCliente'])) {
-                        $result['error'] = 'Identificador de cliente incorrecto';
-                    } elseif ($result['dataset'] = $administrador->readOneCliente()) {
-                        $result['status'] = 1;
-                    } else {
-                        $result['error'] = 'Cliente inexistente';
-                    }
-                    break;
+            //********acciones para rellenar los clientes ********/
+            case 'readAllCliente':
+                if ($result['dataset'] = $administrador->readAllCliente()) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
+                } else {
+                    $result['error'] = 'No existen Clientes registrados';
+                }
+                break;
+            case 'readOneCliente':
+                if (!$administrador->setIdCliente($_POST['idCliente'])) {
+                    $result['error'] = 'Identificador de cliente incorrecto';
+                } elseif ($result['dataset'] = $administrador->readOneCliente()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'Cliente inexistente';
+                }
+                break;
 
-                    case 'updateClienteEstado':
-                        if (!$administrador->setIdCliente($_POST['idCliente'])) {
-                            $result['error'] = 'Identificador de cliente incorrecto';
-                        }else if (!$administrador->setIdEstado($_POST['estadoCliente'])) {
-                            $result['error'] = 'Estado de cliente incorrecto';
-                        } 
-                        elseif ($result['dataset'] = $administrador->updateClienteEstado()) {
-                            $result['status'] = 1;
-                        } else {
-                            $result['error'] = 'Cliente inexistente';
-                        }
-                        break;
+            case 'updateClienteEstado':
+                if (!$administrador->setIdCliente($_POST['idCliente'])) {
+                    $result['error'] = 'Identificador de cliente incorrecto';
+                } else if (!$administrador->setIdEstado($_POST['estadoCliente'])) {
+                    $result['error'] = 'Estado de cliente incorrecto';
+                } elseif ($result['dataset'] = $administrador->updateClienteEstado()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'Cliente inexistente';
+                }
+                break;
 
-                        
-                        /*********************final de acciones clientes******************************/
+
+            /*********************final de acciones clientes******************************/
             case 'changePassword':
                 $_POST = Validator::validateForm($_POST);
                 if (!$administrador->checkPassword($_POST['claveActual'])) {
@@ -179,8 +183,8 @@ if (isset($_GET['action'])) {
                 }
                 break;
 
-              
-    
+
+
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
         }
@@ -216,7 +220,7 @@ if (isset($_GET['action'])) {
                 break;
             case 'logIn':
                 $_POST = Validator::validateForm($_POST);
-                
+
                 if ($administrador->checkUser($_POST['alias'], $_POST['clave'])) {
                     $result['status'] = 1;
                     $result['message'] = 'Autenticación correcta';
@@ -233,7 +237,7 @@ if (isset($_GET['action'])) {
     // Se indica el tipo de contenido a mostrar y su respectivo conjunto de caracteres.
     header('Content-type: application/json; charset=utf-8');
     // Se imprime el resultado en formato JSON y se retorna al controlador.
-    print(json_encode($result));
+    print (json_encode($result));
 } else {
-    print(json_encode('Recurso no disponible'));
+    print (json_encode('Recurso no disponible'));
 }

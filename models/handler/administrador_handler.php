@@ -1,6 +1,6 @@
 <?php
 // Se incluye la clase para trabajar con la base de datos.
-require_once('../../helpers/database.php');
+require_once ('../../helpers/database.php');
 /*
  *  Clase para manejar el comportamiento de los datos de la tabla administrador.
  */
@@ -22,7 +22,7 @@ class AdministradorHandler
     /*
      *  Métodos para gestionar la cuenta del administrador.
      */
-    public function checkUser($username, $password)
+    public function checkUser($username, $password)//CHECK[X]
     {
         $sql = 'SELECT id_administrador, alias_administrador, clave_administrador
                 FROM tb_administradores
@@ -40,7 +40,7 @@ class AdministradorHandler
         }
     }
 
-    public function checkPassword($password)
+    public function checkPassword($password)//CHECK[X]
     {
         $sql = 'SELECT clave_administrador
                 FROM administrador
@@ -96,43 +96,41 @@ class AdministradorHandler
         return Database::getRows($sql, $params);
     }
 
-    public function createRow()
+    public function createRow()//check[X]
     {
-        $sql = 'INSERT INTO administrador(nombre_administrador, apellido_administrador, correo_administrador, alias_administrador, clave_administrador)
-                VALUES(?, ?, ?, ?, ?)';
-        $params = array($this->nombre, $this->apellido, $this->correo, $this->alias, $this->clave);
+        $sql = 'INSERT INTO tb_administradores(nombre_administrador, apellido_administrador, coreo_administrador, alias_administrador, clave_administrador, telefono_administrador)
+                VALUES(?, ?, ?, ?, ?, ?)';
+        $params = array($this->nombre, $this->apellido, $this->correo, $this->alias, $this->clave, $this->telefono);
         return Database::executeRow($sql, $params);
     }
 
-    public function readAll()
+    public function readAll()//check[X]
     {
-        $sql = 'SELECT id_administrador, nombre_administrador, apellido_administrador, correo_administrador, alias_administrador
-                FROM administrador
-                ORDER BY apellido_administrador';
+        $sql = 'SELECT id_administrador,alias_administrador, nombre_administrador, coreo_administrador, telefono_administrador
+                FROM tb_administradores
+                ORDER BY apellido_administrador;';
         return Database::getRows($sql);
     }
 
-    public function readOne()
+    public function readOne()//check[X]
     {
-        $sql = 'SELECT id_administrador, nombre_administrador, apellido_administrador, correo_administrador, alias_administrador
-                FROM administrador
-                WHERE id_administrador = ?';
+        $sql = 'SELECT * FROM tb_administradores WHERE id_administrador = ?;';
         $params = array($this->id);
         return Database::getRow($sql, $params);
     }
 
-    public function updateRow()
+    public function updateRow()//check[X]
     {
-        $sql = 'UPDATE administrador
-                SET nombre_administrador = ?, apellido_administrador = ?, correo_administrador = ?
-                WHERE id_administrador = ?';
-        $params = array($this->nombre, $this->apellido, $this->correo, $this->id);
+        $sql = 'UPDATE tb_administradores
+        SET alias_administrador = ?, nombre_administrador = ?, apellido_administrador = ?, coreo_administrador = ?, telefono_administrador = ?
+        WHERE id_administrador = ?';
+        $params = array($this->alias, $this->nombre, $this->apellido, $this->correo, $this->telefono, $this->id);
         return Database::executeRow($sql, $params);
     }
 
-    public function deleteRow()
+    public function deleteRow()//check[X]
     {
-        $sql = 'DELETE FROM administrador
+        $sql = 'DELETE FROM tb_administradores
                 WHERE id_administrador = ?';
         $params = array($this->id);
         return Database::executeRow($sql, $params);
@@ -164,6 +162,6 @@ class AdministradorHandler
         $params = array($this->estadoCliente, $this->idCliente);
         return Database::executeRow($sql, $params);
     }
-    
+
 
 }
