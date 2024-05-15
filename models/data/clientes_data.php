@@ -2,11 +2,11 @@
 // Se incluye la clase para validar los datos de entrada.
 require_once('../../helpers/validator.php');
 // Se incluye la clase padre.
-require_once('../../models/handler/administrador_handler.php');
+require_once('../../models/handler/cliente_handler.php');
 /*
  *  Clase para manejar el encapsulamiento de los datos de la tabla USUARIO.
  */
-class AdministradorData extends AdministradorHandler
+class ClienteData extends ClienteHandler
 {
     // Atributo genérico para manejo de errores.
     private $data_error = null;
@@ -92,27 +92,6 @@ class AdministradorData extends AdministradorHandler
         }
     }
 
-    public function setIdCliente($value)
-    {
-        if (Validator::validateNaturalNumber($value)) {
-            $this->idCliente = $value;
-            return true;
-        } else {
-            $this->data_error = 'El identificador del Cliente es incorrecto';
-            return false;
-        }
-    }
-
-    public function setIdEstado($value)
-    {
-        if ($value == 'Activo' || $value == 'Desactivo') {
-            $this->estadoCliente = $value;
-            return true;
-        } else {
-            $this->data_error = 'El identificador del Cliente es incorrecto';
-            return false;
-        }
-    }
 
     // Método para obtener el error de los datos.
     public function getDataError()

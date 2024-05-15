@@ -129,6 +129,40 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'Ocurrió un problema al modificar el perfil';
                 }
                 break;
+                  //********acciones para rellenar los clientes ********/
+                case 'readAllCliente':
+                    if ($result['dataset'] = $administrador->readAllCliente()) {
+                        $result['status'] = 1;
+                        $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
+                    } else {
+                        $result['error'] = 'No existen Clientes registrados';
+                    }
+                    break;
+                case 'readOneCliente':
+                    if (!$administrador->setIdCliente($_POST['idCliente'])) {
+                        $result['error'] = 'Identificador de cliente incorrecto';
+                    } elseif ($result['dataset'] = $administrador->readOneCliente()) {
+                        $result['status'] = 1;
+                    } else {
+                        $result['error'] = 'Cliente inexistente';
+                    }
+                    break;
+
+                    case 'updateClienteEstado':
+                        if (!$administrador->setIdCliente($_POST['idCliente'])) {
+                            $result['error'] = 'Identificador de cliente incorrecto';
+                        }else if (!$administrador->setIdEstado($_POST['estadoCliente'])) {
+                            $result['error'] = 'Estado de cliente incorrecto';
+                        } 
+                        elseif ($result['dataset'] = $administrador->updateClienteEstado()) {
+                            $result['status'] = 1;
+                        } else {
+                            $result['error'] = 'Cliente inexistente';
+                        }
+                        break;
+
+                        
+                        /*********************final de acciones clientes******************************/
             case 'changePassword':
                 $_POST = Validator::validateForm($_POST);
                 if (!$administrador->checkPassword($_POST['claveActual'])) {
@@ -144,6 +178,9 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'Ocurrió un problema al cambiar la contraseña';
                 }
                 break;
+
+              
+    
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
         }

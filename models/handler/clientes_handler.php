@@ -4,20 +4,19 @@ require_once('../../helpers/database.php');
 /*
  *  Clase para manejar el comportamiento de los datos de la tabla administrador.
  */
-class AdministradorHandler
+class ClienteHandler
 {
     /*
      *  Declaración de atributos para el manejo de datos.
      */
     protected $id = null;
+    protected $clave = null;
     protected $nombre = null;
     protected $apellido = null;
-    protected $correo = null;
-    protected $alias = null;
-    protected $clave = null;
+    protected $dui = null;
     protected $telefono = null;
-    protected $idCliente = null;
-    protected $estadoCliente = null;
+    protected $direccion = null;
+    protected $correo = null;
 
     /*
      *  Métodos para gestionar la cuenta del administrador.
@@ -32,8 +31,8 @@ class AdministradorHandler
         $data = Database::getRow($sql, $params);
 
         if (password_verify($password, $data['clave_administrador'])) {
-            $_SESSION['idAdministrador'] = $data['id_administrador'];
-            $_SESSION['aliasAdministrador'] = $data['alias_administrador'];
+            $_SESSION['idCliente'] = $data['id_cliente'];
+            $_SESSION['aliasCliente'] = $data['alias_cliente'];
             return true;
         } else {
             return false;
@@ -137,33 +136,4 @@ class AdministradorHandler
         $params = array($this->id);
         return Database::executeRow($sql, $params);
     }
-
-    //metodos para rellenar la tabla de clientes papapapapapapapapaappaapap
-    public function readAllCliente()
-    {
-        $sql = 'SELECT id_cliente, nombre_cliente, correo_cliente, telefono_cliente, estado_cliente 
-        FROM tb_clientes 
-        ORDER BY nombre_cliente;';
-        return Database::getRows($sql);
-    }
-
-    public function readOneCliente()
-    {
-        $sql = 'SELECT clave_cliente, nombre_cliente, apellido_cliente, dui_cliente, telefono_cliente, direccion_cliente, estado_cliente, correo_cliente, DATEDIFF(NOW(), fecha_creacion) AS dias_pasados
-                FROM tb_clientes
-                WHERE id_cliente = ?;';
-        $params = array($this->idCliente);
-        return Database::getRow($sql, $params);
-    }
-
-    public function updateClienteEstado()
-    {
-        $sql = 'UPDATE tb_clientes
-                SET estado_cliente = ?
-                WHERE id_cliente = ?;';
-        $params = array($this->estadoCliente, $this->idCliente);
-        return Database::executeRow($sql, $params);
-    }
-    
-
 }
