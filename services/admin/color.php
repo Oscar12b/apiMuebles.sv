@@ -7,7 +7,7 @@ if (isset($_GET['action'])) {
     // Se crea una sesión o se reanuda la actual para poder utilizar variables de sesión en el script.
     session_start();
     // Se instancia la clase correspondiente.
-    $categoria = new CategoriaData;
+    $color = new ColorData;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
     $result = array('status' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null, 'fileStatus' => null);
     // Se verifica si existe una sesión iniciada como administrador, de lo contrario se finaliza el script con un mensaje de error.
@@ -17,7 +17,7 @@ if (isset($_GET['action'])) {
             case 'searchRows':
                 if (!Validator::validateSearch($_POST['search'])) {
                     $result['error'] = Validator::getSearchError();
-                } elseif ($result['dataset'] = $categoria->searchRows()) {
+                } elseif ($result['dataset'] = $color->searchRows()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
                 } else {
@@ -27,10 +27,10 @@ if (isset($_GET['action'])) {
             case 'createRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$categoria->setNombre($_POST['nombre'])
+                    !$color->setNombre($_POST['nombre'])
                 ) {
-                    $result['error'] = $categoria->getDataError();
-                } elseif ($categoria->createRow()) {
+                    $result['error'] = $color->getDataError();
+                } elseif ($color->createRow()) {
                     $result['status'] = 1;
                     $result['message'] = 'Color creada correctamente';
                 } else {
@@ -38,7 +38,7 @@ if (isset($_GET['action'])) {
                 }
                 break;
             case 'readAll':
-                if ($result['dataset'] = $categoria->readAll()) {
+                if ($result['dataset'] = $color->readAll()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
                 } else {
@@ -46,9 +46,9 @@ if (isset($_GET['action'])) {
                 }
                 break;
             case 'readOne':
-                if (!$categoria->setId($_POST['id'])) {
-                    $result['error'] = $categoria->getDataError();
-                } elseif ($result['dataset'] = $categoria->readOne()) {
+                if (!$color->setId($_POST['id'])) {
+                    $result['error'] = $color->getDataError();
+                } elseif ($result['dataset'] = $color->readOne()) {
                     $result['status'] = 1;
                 } else {
                     $result['error'] = 'Color inexistente';
@@ -57,11 +57,11 @@ if (isset($_GET['action'])) {
             case 'updateRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$categoria->setId($_POST['id']) or
-                    !$categoria->setNombre($_POST['nombre'])
+                    !$color->setId($_POST['id']) or
+                    !$color->setNombre($_POST['nombre'])
                 ) {
-                    $result['error'] = $categoria->getDataError();
-                } elseif ($categoria->updateRow()) {
+                    $result['error'] = $color->getDataError();
+                } elseif ($color->updateRow()) {
                     $result['status'] = 1;
                     $result['message'] = 'Color modificado correctamente';             } else {
                     $result['error'] = 'Ocurrió un problema al modificar el Color';
@@ -69,10 +69,10 @@ if (isset($_GET['action'])) {
                 break;
             case 'deleteRow':
                 if (
-                    !$categoria->setId($_POST['id'])
+                    !$color->setId($_POST['id'])
                 ) {
-                    $result['error'] = $categoria->getDataError();
-                } elseif ($categoria->deleteRow()) {
+                    $result['error'] = $color->getDataError();
+                } elseif ($color->deleteRow()) {
                     $result['status'] = 1;
                     $result['message'] = 'Color eliminado correctamente';} else {
                     $result['error'] = 'Ocurrió un problema al eliminar el Color';
