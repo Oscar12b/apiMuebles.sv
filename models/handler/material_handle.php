@@ -13,26 +13,25 @@ class MaterialHandler
     protected $nombre = null;
 
     // Constante para establecer la ruta de las imágenes.
-    const RUTA_IMAGEN = '../../images/categorias/';
 
     /*
      *  Métodos para realizar las operaciones SCRUD (search, create, read, update, and delete).
      */
-    <?php
+  
     public function searchRows()
     {
         $value = '%' . Validator::getSearchValue() . '%';
         $sql = 'SELECT id_material, nombre_material
-                FROM material
+                FROM tb_materiales 
                 WHERE nombre_material LIKE ?
                 ORDER BY nombre_material';
-        $params = array($value $value);
+        $params = array($value);
         return Database::getRows($sql, $params);
     }
-    ?>
+
     public function createRow()
     {
-        $sql = 'INSERT INTO material(nombre_material)
+        $sql = 'INSERT INTO tb_materiales (nombre_material)
                 VALUES(?)';
         $params = array($this->nombre);
         return Database::executeRow($sql, $params);
@@ -41,7 +40,7 @@ class MaterialHandler
     public function readAll()
     {
         $sql = 'SELECT id_material, nombre_material
-                FROM material
+                FROM tb_materiales 
                 ORDER BY nombre_material';
         return Database::getRows($sql);
     }
@@ -49,7 +48,7 @@ class MaterialHandler
     public function readOne()
     {
         $sql = 'SELECT id_material, nombre_material
-                FROM material
+                FROM tb_materiales 
                 WHERE id_material = ?';
         $params = array($this->id);
         return Database::getRow($sql, $params);
@@ -58,16 +57,16 @@ class MaterialHandler
 
     public function updateRow()
     {
-        $sql = 'UPDATE material
+        $sql = 'UPDATE tb_materiales 
                 SET nombre_material = ?
                 WHERE id_material = ?';
-        $params = array($this->nombre $this->id);
+        $params = array($this->nombre, $this->id);
         return Database::executeRow($sql, $params);
     }
 
     public function deleteRow()
     {
-        $sql = 'DELETE FROM material
+        $sql = 'DELETE FROM tb_materiales 
                 WHERE id_material = ?';
         $params = array($this->id);
         return Database::executeRow($sql, $params);

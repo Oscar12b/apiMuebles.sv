@@ -47,7 +47,7 @@ if (isset($_GET['action'])) {
                 }
                 break;
             case 'readOne':
-                if (!$categoria->setId($_POST['idcategoria'])) {
+                if (!$categoria->setId($_POST['id'])) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($result['dataset'] = $categoria->readOne()) {
                     $result['status'] = 1;
@@ -58,8 +58,8 @@ if (isset($_GET['action'])) {
             case 'updateRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$categoria->setId($_POST['idcategoria']) or
-                    !$categoria->setNombre($_POST['nombrecategoria'])
+                    !$categoria->setId($_POST['id']) or
+                    !$categoria->setNombre($_POST['nombre'])
                 ) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($categoria->updateRow()) {
@@ -71,7 +71,7 @@ if (isset($_GET['action'])) {
                 break;
             case 'deleteRow':
                 if (
-                    !$categoria->setId($_POST['idategoria'])
+                    !$categoria->setId($_POST['id'])
                 ) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($categoria->deleteRow()) {

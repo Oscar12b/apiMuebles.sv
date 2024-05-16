@@ -42,17 +42,6 @@ class ColorData extends ColorHandler
         }
     }
 
-    public function setFilename()
-    {
-        if ($data = $this->readFilename()) {
-            $this->filename = $data['imagen_categoria'];
-            return true;
-        } else {
-            $this->data_error = 'Categoría inexistente';
-            return false;
-        }
-    }
-
     /*
      *  Métodos para obtener el valor de los atributos adicionales.
      */
