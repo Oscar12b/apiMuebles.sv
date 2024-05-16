@@ -1,6 +1,6 @@
 <?php
 // Se incluye la clase del modelo.
-require_once('../../models/data/categoria_data.php');
+require_once ('../../models/data/categoria_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
@@ -47,7 +47,7 @@ if (isset($_GET['action'])) {
                 }
                 break;
             case 'readOne':
-                if (!$categoria->setId($_POST['idcategoria'])) {
+                if (!$categoria->setId($_POST['id'])) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($result['dataset'] = $categoria->readOne()) {
                     $result['status'] = 1;
@@ -58,8 +58,8 @@ if (isset($_GET['action'])) {
             case 'updateRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$categoria->setId($_POST['idcategoria']) or
-                    !$categoria->setNombre($_POST['nombrecategoria'])
+                    !$categoria->setId($_POST['id']) or
+                    !$categoria->setNombre($_POST['nombre'])
                 ) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($categoria->updateRow()) {
@@ -71,9 +71,10 @@ if (isset($_GET['action'])) {
                 break;
             case 'deleteRow':
                 if (
-                    !$categoria->setId($_POST['idategoria'])
+                    !$categoria->setId($_POST['id'])
                 ) {
                     $result['error'] = $categoria->getDataError();
+                    $result['errodetail'] = $_POST['id'];
                 } elseif ($categoria->deleteRow()) {
                     $result['status'] = 1;
                     $result['message'] = 'Categoría eliminada correctamente';
@@ -89,10 +90,10 @@ if (isset($_GET['action'])) {
         // Se indica el tipo de contenido a mostrar y su respectivo conjunto de caracteres.
         header('Content-type: application/json; charset=utf-8');
         // Se imprime el resultado en formato JSON y se retorna al controlador.
-        print(json_encode($result));
+        print (json_encode($result));
     } else {
-        print(json_encode('Acceso denegado'));
+        print (json_encode('Acceso denegado'));
     }
 } else {
-    print(json_encode('Recurso no disponible'));
+    print (json_encode('Recurso no disponible'));
 }
