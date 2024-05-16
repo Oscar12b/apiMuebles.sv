@@ -12,8 +12,6 @@ class ColorHandler
     protected $id = null;
     protected $nombre = null;
 
-    // Constante para establecer la ruta de las imágenes.
-    const RUTA_IMAGEN = '../../images/categorias/';
 
     /*
      *  Métodos para realizar las operaciones SCRUD (search, create, read, update, and delete).
@@ -23,7 +21,7 @@ class ColorHandler
     {
         $value = '%' . Validator::getSearchValue() . '%';
         $sql = 'SELECT id_color, nombre_color
-                FROM color
+                FROM tb_colores
                 WHERE nombre_color LIKE ?
                 ORDER BY nombre_color';
         $params = array($value $value);
@@ -32,7 +30,7 @@ class ColorHandler
     ?>
     public function createRow()
     {
-        $sql = 'INSERT INTO color(nombre_color)
+        $sql = 'INSERT INTO tb_colores(nombre_color)
                 VALUES(?)';
         $params = array($this->nombre);
         return Database::executeRow($sql, $params);
@@ -41,7 +39,7 @@ class ColorHandler
     public function readAll()
     {
         $sql = 'SELECT id_color, nombre_color
-                FROM color
+                FROM tb_colores
                 ORDER BY nombre_color';
         return Database::getRows($sql);
     }
@@ -49,7 +47,7 @@ class ColorHandler
     public function readOne()
     {
         $sql = 'SELECT id_color, nombre_color
-                FROM color
+                FROM tb_colores
                 WHERE id_color = ?';
         $params = array($this->id);
         return Database::getRow($sql, $params);
@@ -58,7 +56,7 @@ class ColorHandler
 
     public function updateRow()
     {
-        $sql = 'UPDATE color
+        $sql = 'UPDATE tb_colores
                 SET nombre_color = ?
                 WHERE id_color = ?';
         $params = array($this->nombre $this->id);
@@ -67,7 +65,7 @@ class ColorHandler
 
     public function deleteRow()
     {
-        $sql = 'DELETE FROM color
+        $sql = 'DELETE FROM tb_colores
                 WHERE id_color = ?';
         $params = array($this->id);
         return Database::executeRow($sql, $params);

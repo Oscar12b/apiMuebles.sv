@@ -1,6 +1,6 @@
 <?php
 // Se incluye la clase del modelo.
-require_once('../../models/data/categoria_data.php');
+require_once('../../models/data/color_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
@@ -27,16 +27,14 @@ if (isset($_GET['action'])) {
             case 'createRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$categoria->setNombre($_POST['nombreCategoria'])
+                    !$categoria->setNombre($_POST['nombrecolor'])
                 ) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($categoria->createRow()) {
                     $result['status'] = 1;
                     $result['message'] = 'Color creada correctamente';
-                    // Se asigna el estado del archivo después de insertar.
-                    $result['fileStatus'] = Validator::saveFile($_FILES['imagenCategoria'], $categoria::RUTA_IMAGEN);
                 } else {
-                    $result['error'] = 'Ocurrió un problema al crear la categoría';
+                    $result['error'] = 'Ocurrió un problema al crear la Color';
                 }
                 break;
             case 'readAll':
@@ -44,50 +42,41 @@ if (isset($_GET['action'])) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
                 } else {
-                    $result['error'] = 'No existen categorías registradas';
+                    $result['error'] = 'No existen Color registradas';
                 }
                 break;
             case 'readOne':
-                if (!$categoria->setId($_POST['idCategoria'])) {
+                if (!$categoria->setId($_POST['idcolor'])) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($result['dataset'] = $categoria->readOne()) {
                     $result['status'] = 1;
                 } else {
-                    $result['error'] = 'Categoría inexistente';
+                    $result['error'] = 'Color inexistente';
                 }
                 break;
             case 'updateRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$categoria->setId($_POST['idCategoria']) or
-                    !$categoria->setFilename() or
-                    !$categoria->setNombre($_POST['nombreCategoria']) or
-                    !$categoria->setDescripcion($_POST['descripcionCategoria']) or
-                    !$categoria->setImagen($_FILES['imagenCategoria'], $categoria->getFilename())
+                    !$categoria->setId($_POST['idcolor']) or
+                    !$categoria->setNombre($_POST['nombrecolor'])
                 ) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($categoria->updateRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Categoría modificada correctamente';
-                    // Se asigna el estado del archivo después de actualizar.
-                    $result['fileStatus'] = Validator::changeFile($_FILES['imagenCategoria'], $categoria::RUTA_IMAGEN, $categoria->getFilename());
-                } else {
-                    $result['error'] = 'Ocurrió un problema al modificar la categoría';
+                    $result['message'] = 'Color modificada correctamente';             } else {
+                    $result['error'] = 'Ocurrió un problema al modificar el Color';
                 }
                 break;
             case 'deleteRow':
                 if (
-                    !$categoria->setId($_POST['idCategoria']) or
+                    !$categoria->setId($_POST['idcolor']) or
                     !$categoria->setFilename()
                 ) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($categoria->deleteRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Categoría eliminada correctamente';
-                    // Se asigna el estado del archivo después de eliminar.
-                    $result['fileStatus'] = Validator::deleteFile($categoria::RUTA_IMAGEN, $categoria->getFilename());
-                } else {
-                    $result['error'] = 'Ocurrió un problema al eliminar la categoría';
+                    $result['message'] = 'Color eliminada correctamente';} else {
+                    $result['error'] = 'Ocurrió un problema al eliminar le Color';
                 }
                 break;
             default:
