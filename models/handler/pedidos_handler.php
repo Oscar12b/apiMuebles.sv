@@ -16,18 +16,6 @@ class PedidoHandler
     protected $direccion = null;
 
     /*
-     *  Métodos para cambiar el estado de un pedido.
-     */
-    public function cambiarEstado()
-    {
-        $sql = 'UPDATE tb_pedidos
-                SET estado_pedido = ?
-                WHERE id_pedido = ?';
-        $params = array($this->estado, $this->id);
-        return Database::executeRow($sql, $params);
-    }
-
-    /*
      *  Métodos para eliminar un pedido.
      */
     public function eliminarPedido()
