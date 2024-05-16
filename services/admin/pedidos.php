@@ -9,16 +9,44 @@ if (isset($_GET['action'])) {
     if (isset($_SESSION['idAdministrador'])) {
         switch ($_GET['action']) {
             case 'searchRows':
-                break;
-            case 'createRow':
+                if (!Validator::validateSearch($_POST['search'])) {
+                    $result['error'] = Validator::getSearchError();
+                } elseif ($result['dataset'] = $pedido->searchRows()) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
+                } else {
+                    $result['error'] = 'No hay coincidencias';
+                }
                 break;
             case 'readAll':
+                if ($result['dataset'] = $pedido->readAll()) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
+                } else {
+                    $result['error'] = 'No existen pedidos registrados';
+                }
                 break;
             case 'readOne':
-                break;
-            case 'updateRow':
+                if (!$pedido->setId($_POST['id'])) {
+                    $result['error'] = $pedido->getDataError();
+                } elseif ($result['dataset'] = $pedido->readOne()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'Pedido inexistente';
+                }
                 break;
             case 'deleteRow':
+                if (
+                    !$pedido->setId($_POST['id'])
+                ) {
+                    $result['error'] = $pedido->getDataError();
+                    $result['errodetail'] = $_POST['id'];
+                } elseif ($pedido->deleteRow()) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Pedido eliminada correctamente';
+                } else {
+                    $result['error'] = 'Ocurrió un problema al eliminar el pedido';
+                }
                 break;
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
