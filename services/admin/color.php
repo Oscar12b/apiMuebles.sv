@@ -27,14 +27,14 @@ if (isset($_GET['action'])) {
             case 'createRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$categoria->setNombre($_POST['nombrecolor'])
+                    !$categoria->setNombre($_POST['nombre'])
                 ) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($categoria->createRow()) {
                     $result['status'] = 1;
                     $result['message'] = 'Color creada correctamente';
                 } else {
-                    $result['error'] = 'Ocurrió un problema al crear la Color';
+                    $result['error'] = 'Ocurrió un problema al crear el Color';
                 }
                 break;
             case 'readAll':
@@ -42,11 +42,11 @@ if (isset($_GET['action'])) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
                 } else {
-                    $result['error'] = 'No existen Color registradas';
+                    $result['error'] = 'No existen colores registrados';
                 }
                 break;
             case 'readOne':
-                if (!$categoria->setId($_POST['idcolor'])) {
+                if (!$categoria->setId($_POST['id'])) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($result['dataset'] = $categoria->readOne()) {
                     $result['status'] = 1;
@@ -57,26 +57,25 @@ if (isset($_GET['action'])) {
             case 'updateRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$categoria->setId($_POST['idcolor']) or
-                    !$categoria->setNombre($_POST['nombrecolor'])
+                    !$categoria->setId($_POST['id']) or
+                    !$categoria->setNombre($_POST['nombre'])
                 ) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($categoria->updateRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Color modificada correctamente';             } else {
+                    $result['message'] = 'Color modificado correctamente';             } else {
                     $result['error'] = 'Ocurrió un problema al modificar el Color';
                 }
                 break;
             case 'deleteRow':
                 if (
-                    !$categoria->setId($_POST['idcolor']) or
-                    !$categoria->setFilename()
+                    !$categoria->setId($_POST['id'])
                 ) {
                     $result['error'] = $categoria->getDataError();
                 } elseif ($categoria->deleteRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Color eliminada correctamente';} else {
-                    $result['error'] = 'Ocurrió un problema al eliminar le Color';
+                    $result['message'] = 'Color eliminado correctamente';} else {
+                    $result['error'] = 'Ocurrió un problema al eliminar el Color';
                 }
                 break;
             default:

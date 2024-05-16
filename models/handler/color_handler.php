@@ -16,7 +16,7 @@ class ColorHandler
     /*
      *  Métodos para realizar las operaciones SCRUD (search, create, read, update, and delete).
      */
-    <?php
+
     public function searchRows()
     {
         $value = '%' . Validator::getSearchValue() . '%';
@@ -24,10 +24,10 @@ class ColorHandler
                 FROM tb_colores
                 WHERE nombre_color LIKE ?
                 ORDER BY nombre_color';
-        $params = array($value $value);
+        $params = array($value);
         return Database::getRows($sql, $params);
     }
-    ?>
+
     public function createRow()
     {
         $sql = 'INSERT INTO tb_colores(nombre_color)
@@ -59,7 +59,7 @@ class ColorHandler
         $sql = 'UPDATE tb_colores
                 SET nombre_color = ?
                 WHERE id_color = ?';
-        $params = array($this->nombre $this->id);
+        $params = array($this->nombre, $this->id);
         return Database::executeRow($sql, $params);
     }
 
