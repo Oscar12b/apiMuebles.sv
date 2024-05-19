@@ -9,7 +9,7 @@ if (isset($_GET['action'])) {
     if (isset($_SESSION['idAdministrador'])) {
         switch ($_GET['action']) {
             case 'searchRows':
-                if (!Validator::validateSearch($_POST['search'])) {
+                if (isset($_POST['search'])) {
                     $result['error'] = Validator::getSearchError();
                 } elseif ($result['dataset'] = $pedido->searchRows()) {
                     $result['status'] = 1;

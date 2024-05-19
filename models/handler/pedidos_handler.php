@@ -42,10 +42,12 @@ class PedidoHandler
     /*
      *  Métodos para realizar las operaciones de búsqueda y cambio de estado.
      */
-    public function buscarPedidos()
+    public function searchRows()
     {
+        $value = '%' . Validator::getSearchValue() . '%';
         $sql = 'SELECT id_pedido, estado_pedido, fecha_pedido, fecha_entrega, direccion_pedido
                 FROM tb_pedidos';
+        $params = array($value, $value);
         return Database::getRows($sql);
     }
 
