@@ -66,7 +66,7 @@ class AdministradorHandler
 
     public function readProfile()
     {
-        $sql = 'SELECT id_administrador, nombre_administrador, apellido_administrador, correo_administrador, alias_administrador
+        $sql = 'SELECT id_administrador, nombre_administrador, apellido_administrador, coreo_administrador, alias_administrador
                 FROM administrador
                 WHERE id_administrador = ?';
         $params = array($_SESSION['idAdministrador']);
@@ -76,7 +76,7 @@ class AdministradorHandler
     public function editProfile()
     {
         $sql = 'UPDATE administrador
-                SET nombre_administrador = ?, apellido_administrador = ?, correo_administrador = ?, alias_administrador = ?
+                SET nombre_administrador = ?, apellido_administrador = ?, coreo_administrador = ?, alias_administrador = ?
                 WHERE id_administrador = ?';
         $params = array($this->nombre, $this->apellido, $this->correo, $this->alias, $_SESSION['idAdministrador']);
         return Database::executeRow($sql, $params);
@@ -88,10 +88,10 @@ class AdministradorHandler
     public function searchRows()
     {
         $value = '%' . Validator::getSearchValue() . '%';
-        $sql = 'SELECT id_administrador, nombre_administrador, apellido_administrador, correo_administrador, alias_administrador
-                FROM administrador
-                WHERE apellido_administrador LIKE ? OR nombre_administrador LIKE ?
-                ORDER BY apellido_administrador';
+        $sql = 'SELECT id_administrador, nombre_administrador, apellido_administrador, coreo_administrador, alias_administrador
+                FROM tb_administradores
+                WHERE nombre_administrador LIKE ? OR coreo_administrador LIKE ?
+                ORDER BY nombre_administrador';
         $params = array($value, $value);
         return Database::getRows($sql, $params);
     }

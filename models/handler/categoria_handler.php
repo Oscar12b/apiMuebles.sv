@@ -19,7 +19,7 @@ class CategoriaHandler
      *  Métodos para realizar las operaciones SCRUD (search, create, read, update, and delete).
      */
 
-    /*public function searchRows()
+    public function searchRows()
     {
         $value = '%' . Validator::getSearchValue() . '%';
         $sql = 'SELECT id_categoria, nombre_categoria
@@ -28,7 +28,7 @@ class CategoriaHandler
                 ORDER BY nombre_categoria';
         $params = array($value);
         return Database::getRows($sql, $params);
-    }*/
+    }
 
     public function createRow()
     {
