@@ -25,7 +25,7 @@ class PedidoData extends PedidoHandler
         }
     }
 
-    /* public function setIdDetalle($value)
+    public function setIdDetalle($value)
     {
         if (Validator::validateNaturalNumber($value)) {
             $this->id_detalle = $value;
@@ -34,7 +34,7 @@ class PedidoData extends PedidoHandler
             $this->data_error = 'El identificador del detalle pedido es incorrecto';
             return false;
         }
-    } */
+    }
 
     public function setCliente($value)
     {
@@ -54,17 +54,6 @@ class PedidoData extends PedidoHandler
             return true;
         } else {
             $this->data_error = 'El identificador del producto es incorrecto';
-            return false;
-        }
-    }
-
-    public function setCantidad($value)
-    {
-        if (Validator::validateNaturalNumber($value)) {
-            $this->cantidad = $value;
-            return true;
-        } else {
-            $this->data_error = 'La cantidad del producto debe ser mayor o igual a 1';
             return false;
         }
     }
