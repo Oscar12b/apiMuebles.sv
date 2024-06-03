@@ -145,6 +145,7 @@ class ClienteHandler
         INNER JOIN tb_detalles_pedidos d ON p.id_pedido = d.id_pedido
         WHERE c.id_cliente = ?
         GROUP BY c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido';
-        return Database::getRows($sql);
+        $params = array($this->id);
+        return Database::getRows($sql, $params);
     }
 }
