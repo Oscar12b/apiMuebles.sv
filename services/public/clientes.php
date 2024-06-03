@@ -1,6 +1,6 @@
 <?php
 // Se incluye la clase del modelo.
-require_once('..\..\models\data\cliente_data.php');
+require_once ('../../models/data/clientes_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
@@ -11,7 +11,7 @@ if (isset($_GET['action'])) {
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
     $result = array('status' => 0, 'session' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null, 'username' => null);
     // Se verifica si existe una sesión iniciada como cliente, de lo contrario se finaliza el script con un mensaje de error.
-    if (isset($_SESSION['idcliente'])) {
+    if (isset($_SESSION['idCliente'])) {
         $result['session'] = 1;
         // Se compara la acción a realizar cuando un cliente ha iniciado sesión.
         switch ($_GET['action']) {
@@ -139,28 +139,49 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'Debe crear un cliente para comenzar';
                 }
                 break;
+
             case 'signUp':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$cliente->setNombre($_POST['nombrecliente']) or
-                    !$cliente->setApellido($_POST['apellidocliente']) or
-                    !$cliente->setCorreo($_POST['correocliente']) or
-                    !$cliente->setAlias($_POST['aliascliente']) or
-                    !$cliente->setClave($_POST['clavecliente'])
+                    !$cliente->setAlias($_POST['aliasCliente']) or
+                    !$cliente->setClave($_POST['clavecliente']) or
+                    !$cliente->setNombre($_POST['nombreCliente']) or
+                    !$cliente->setApellido($_POST['apellidoCliente']) or
+                    !$cliente->setDui($_POST['duiCliente']) or
+                    !$cliente->setTelefono($_POST['telefonoCliente']) or
+                    !$cliente->setDireccion($_POST['direccionCliente']) or
+                    !$cliente->setCorreo($_POST['correoCliente'])
                 ) {
+
                     $result['error'] = $cliente->getDataError();
+
                 } elseif ($_POST['clavecliente'] != $_POST['confirmarClave']) {
+
                     $result['error'] = 'Contraseñas diferentes';
+
+                } elseif (!$cliente->checkDuplicate($_POST['correoCliente'], $_POST['aliasCliente'])) {
+
+                    $result['error'] = 'El correo o alias ya se encuentra registrado';
+
                 } elseif ($cliente->createRow()) {
+
                     $result['status'] = 1;
                     $result['message'] = 'cliente registrado correctamente';
+
+                    //se asegura de crear una session
+                    if ($cliente->checkUser($_POST['aliasCliente'], $_POST['clavecliente'])) {
+                        $result['session'] = 1;
+                    } else {
+                        $result['error'] = 'No se pudo iniciar sesión por favor inicia sesión manualmente';
+                    }
+
                 } else {
                     $result['error'] = 'Ocurrió un problema al registrar el cliente';
                 }
                 break;
             case 'logIn':
                 $_POST = Validator::validateForm($_POST);
-                
+
                 if ($cliente->checkUser($_POST['alias'], $_POST['clave'])) {
                     $result['status'] = 1;
                     $result['message'] = 'Autenticación correcta';
@@ -177,7 +198,7 @@ if (isset($_GET['action'])) {
     // Se indica el tipo de contenido a mostrar y su respectivo conjunto de caracteres.
     header('Content-type: application/json; charset=utf-8');
     // Se imprime el resultado en formato JSON y se retorna al controlador.
-    print(json_encode($result));
+    print (json_encode($result));
 } else {
-    print(json_encode('Recurso no disponible'));
+    print (json_encode('Recurso no disponible'));
 }

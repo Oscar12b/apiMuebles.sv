@@ -1,44 +1,51 @@
 <?php
 // Se incluye la clase para trabajar con la base de datos.
-require_once('../../helpers/database.php');
+require_once ('../../helpers/database.php');
 /*
-*	Clase para manejar el comportamiento de los datos de la tabla PRODUCTO.
-*/
+ *	Clase para manejar el comportamiento de los datos de la tabla PRODUCTO.
+ */
 
 
 class ProductoHandler
 {
+
+    //--- variables providas
+
+
     /*
-    *   Declaración de atributos para el manejo de datos.
-    */
+     *   Declaración de atributos para el manejo de datos.
+     */
     protected $id = null;
     protected $nombre = null;
     protected $descripcion = null;
     protected $precio = null;
     protected $precio_antiguo = null;
-    protected $estado = null; 
+    protected $estado = null;
     protected $stock = null;
     protected $id_categoria = null;
     protected $id_color = null;
     protected $id_material = null;
-    protected $id_administrador = null;  
-    protected $imagen = null; 
+    protected $id_administrador = null;
+    protected $imagen = null;
 
     // Constante para establecer la ruta de las imágenes.
     const RUTA_IMAGEN = '../../imagenes/productos';
 
     /*
-    *   Métodos para realizar las operaciones SCRUD (search, create, read, update, and delete).
-    */
+     *   Métodos para realizar las operaciones SCRUD (search, create, read, update, and delete).
+     */
     public function searchRows()
     {
         $value = '%' . Validator::getSearchValue() . '%';
-        $sql = 'SELECT id_producto, imagen_producto, nombre_producto, descripcion_producto, precio_producto, nombre_categoria, estado_producto
-                FROM producto
-                INNER JOIN categoria USING(id_categoria)
-                WHERE nombre_producto LIKE ? OR descripcion_producto LIKE ?
-                ORDER BY nombre_producto';
-        $params = array($value, $value);
+        $sql = 'SELECT id_mueble,imagen,nombre_mueble,precio,estado,stock,nombre_categoria,nombre_material 
+        FROM tb_muebles 
+        INNER JOIN tb_categorias 
+        ON tb_muebles.id_categoria = tb_categorias.id_categoria 
+        INNER JOIN tb_materiales 
+        ON tb_muebles.id_material = tb_materiales.id_material
+        WHERE nombre_mueble LIKE ? OR nombre_categoria LIKE ? OR precio LIKE ?
+        OR stock LIKE ? OR nombre_material LIKE ? ORDER BY nombre_mueble';
+        $params = array($value, $value, $value, $value, $value);
         return Database::getRows($sql, $params);
     }
 
@@ -46,8 +53,16 @@ class ProductoHandler
     {
         $sql = 'INSERT INTO tb_muebles (imagen, nombre_mueble, descripcion_mueble, precio, stock, id_categoria, id_color, id_material, id_administrador) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);';
-        $params = array($this-> imagen, $this->nombre, $this->descripcion, $this->precio, $this->stock, $this->id_categoria, $this->id_color, $this->id_material, $_SESSION['idAdministrador']);
+        $params = array($this->imagen, $this->nombre, $this->descripcion, $this->precio, $this->stock, $this->id_categoria, $this->id_color, $this->id_material, $_SESSION['idAdministrador']);
         return Database::executeRow($sql, $params);
+    }
+
+    public function checkDuplicate()
+    {
+        $sql = 'SELECT COUNT(*) FROM tb_muebles 
+                WHERE id_material = ? AND id_color = ? AND id_categoria = ? AND nombre_mueble = ?';
+        $params = array($this->id_categoria, $this->id_color, $this->id_material, $this->nombre);
+        return Database::getRow($sql, $params);
     }
 
     public function readAll()
@@ -85,7 +100,7 @@ class ProductoHandler
         $sql = 'UPDATE tb_muebles
             SET imagen = ?, nombre_mueble = ?, descripcion_mueble = ?, precio = ?, stock = ?, id_categoria = ?, id_color = ? ,id_material = ?
             WHERE id_mueble = ?';
-        $params = array($this-> imagen, $this->nombre, $this->descripcion, $this->precio, $this->stock, $this->id_categoria, $this->id_color, $this->id_material, $this->id);
+        $params = array($this->imagen, $this->nombre, $this->descripcion, $this->precio, $this->stock, $this->id_categoria, $this->id_color, $this->id_material, $this->id);
         return Database::executeRow($sql, $params);
     }
 
@@ -96,6 +111,8 @@ class ProductoHandler
         $params = array($this->id);
         return Database::executeRow($sql, $params);
     }
+
+    //--------------------Métodos para la tabla producto--------------------
 
     public function readProductosCategoria()
     {
@@ -109,8 +126,8 @@ class ProductoHandler
     }
 
     /*
-    *   Métodos para generar gráficos.
-    */
+     *   Métodos para generar gráficos.
+     */
     public function cantidadProductosCategoria()
     {
         $sql = 'SELECT nombre_categoria, COUNT(id_producto) cantidad
@@ -130,8 +147,8 @@ class ProductoHandler
     }
 
     /*
-    *   Métodos para generar reportes.
-    */
+     *   Métodos para generar reportes.
+     */
     public function productosCategoria()
     {
         $sql = 'SELECT nombre_producto, precio_producto, estado_producto
@@ -142,4 +159,5 @@ class ProductoHandler
         $params = array($this->categoria);
         return Database::getRows($sql, $params);
     }
+
 }
