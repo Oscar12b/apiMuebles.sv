@@ -159,7 +159,7 @@ if (isset($_GET['action'])) {
 
                     $result['error'] = 'Contraseñas diferentes';
 
-                } elseif (!$cliente->checkDuplicate($_POST['correoCliente'], $_POST['aliasCliente'])) {
+                } elseif ($cliente->checkDuplicate($_POST['correoCliente'], $_POST['aliasCliente'])) {
 
                     $result['error'] = 'El correo o alias ya se encuentra registrado';
 
