@@ -33,8 +33,8 @@ class ClienteHandler
         if (password_verify($password, $data['clave_cliente'])) {
             // Se verifica si el cliente no esta dado de baja de lo contrario no se le da paso al sistema
             if ($data['estado_cliente'] == 'Activo') {
-                $_SESSION['aliasCliente'] = $data['id_cliente'];
-                $_SESSION['idCliente'] = $data['alias_cliente'];
+                $_SESSION['idCliente'] = $data['id_cliente'];
+                $_SESSION['aliasCliente'] = $data['alias_cliente'];
                 return true;
 
             } else {
@@ -138,5 +138,19 @@ class ClienteHandler
                 WHERE dui_cliente = ? OR correo_cliente = ?';
         $params = array($dui, $email);
         return Database::getRow($sql, $params);
+    }
+
+
+    //---------- cuenta historali de pedidos---------------------
+    public function readhistory()
+    {
+        $sql = 'SELECT c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido, SUM(d.precio_pedido * d.cantidad_pedido) AS precio_total
+        FROM tb_clientes c
+        INNER JOIN tb_pedidos p ON c.id_cliente = p.id_cliente
+        INNER JOIN tb_detalles_pedidos d ON p.id_pedido = d.id_pedido
+        WHERE c.id_cliente = ?
+        GROUP BY c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido;';
+        $params = array($_SESSION['idCliente']);
+        return Database::getRows($sql, $params);
     }
 }

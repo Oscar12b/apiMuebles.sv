@@ -4,14 +4,20 @@ require_once('..\..\models\data\clientes_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
+    // Se crea una sesión o se reanuda la actual para poder utilizar variables de sesión en el script.
+    session_start();
     // Se instancia la clase correspondiente.
     $cliente = new ClienteData;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
-    $result = array('status' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null);
-    // Se compara la acción a realizar según la petición del controlador.
+    $result = array('status' => 0, 'session' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null, 'username' => null);
+    // Se verifica si existe una sesión iniciada como cliente, de lo contrario se finaliza el script con un mensaje de error.
+  if(isset($_SESSION['idCliente'])) {
+     $result['session'] = 1;
+
     switch ($_GET['action']) {
         case 'readhistory':
-            if (!$cliente->setId($_POST['idcliente'])) {
+            if (!$cliente->setId($_SESSION['idCliente'])) {
+                echo $_SESSION['idCliente']; // Imprime el valor de $_SESSION['idCliente']
                 $result['error'] = 'cliente incorrecto';
             } elseif ($result['dataset'] = $cliente->readhistory()) {
                 $result['status'] = 1;
@@ -32,6 +38,7 @@ if (isset($_GET['action'])) {
         default:
             $result['error'] = 'Acción no disponible';
     }
+}
     // Se obtiene la excepción del servidor de base de datos por si ocurrió un problema.
     $result['exception'] = Database::getException();
     // Se indica el tipo de contenido a mostrar y su respectivo conjunto de caracteres.
