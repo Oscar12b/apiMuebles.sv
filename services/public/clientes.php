@@ -71,9 +71,9 @@ if (isset($_GET['action'])) {
                 }
                 break;
             case 'getUser':
-                if (isset($_SESSION['aliascliente'])) {
+                if (isset($_SESSION['aliasCliente'])) {
                     $result['status'] = 1;
-                    $result['username'] = $_SESSION['aliascliente'];
+                    $result['username'] = $_SESSION['aliasCliente'];
                 } else {
                     $result['error'] = 'Alias de cliente indefinido';
                 }

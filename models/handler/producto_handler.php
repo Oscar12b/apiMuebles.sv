@@ -77,6 +77,8 @@ class ProductoHandler
         return Database::getRows($sql);
     }
 
+
+
     public function readOne()
     {
         $sql = 'SELECT id_mueble as idMueble, imagen as imagenMueble, nombre_mueble as nombreMueble, descripcion_mueble as descripcionMueble, precio as precioMueble, stock as stockMueble, id_categoria as categoriaMueble, id_color as colorMueble, id_material as materialMueble 
@@ -110,6 +112,37 @@ class ProductoHandler
                 WHERE id_mueble = ?';
         $params = array($this->id);
         return Database::executeRow($sql, $params);
+    }
+
+
+    //--------------------Metodos para la parte publica--------------------
+
+    public function searchRowsTienda()
+    {
+        $value = '%' . Validator::getSearchValue() . '%';
+        $sql = 'SELECT id_mueble,imagen,nombre_mueble,precio,precio_antiguo,estado,stock,nombre_categoria,nombre_material 
+        FROM tb_muebles 
+        INNER JOIN tb_categorias 
+        ON tb_muebles.id_categoria = tb_categorias.id_categoria 
+        INNER JOIN tb_materiales 
+        ON tb_muebles.id_material = tb_materiales.id_material
+        WHERE nombre_mueble LIKE ? OR nombre_categoria LIKE ? OR precio LIKE ?
+        OR stock LIKE ? OR nombre_material LIKE ? ORDER BY nombre_mueble';
+        $params = array($value, $value, $value, $value, $value);
+        return Database::getRows($sql, $params);
+    }
+
+    //leer los productos de la tienda
+    public function readAllTienda()
+    {
+        $sql = 'SELECT id_mueble,imagen,nombre_mueble,precio,precio_antiguo,estado,stock,nombre_categoria,nombre_material 
+                FROM tb_muebles 
+                INNER JOIN tb_categorias 
+                ON tb_muebles.id_categoria = tb_categorias.id_categoria 
+                INNER JOIN tb_materiales 
+                ON tb_muebles.id_material = tb_materiales.id_material;';
+
+        return Database::getRows($sql);
     }
 
     //--------------------Métodos para la tabla producto--------------------
