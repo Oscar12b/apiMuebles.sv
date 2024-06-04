@@ -1,23 +1,23 @@
 <?php
 // Se incluye la clase para validar los datos de entrada.
-require_once('../../helpers/validator.php');
+require_once ('../../helpers/validator.php');
 // Se incluye la clase padre.
-require_once('../../models/handler/pedidos_handler.php');
+require_once ('../../models/handler/pedidos_handler.php');
 /*
-*	Clase para manejar el encapsulamiento de los datos de las tablas PEDIDO y DETALLE_PEDIDO.
-*/
+ *	Clase para manejar el encapsulamiento de los datos de las tablas PEDIDO y DETALLE_PEDIDO.
+ */
 class PedidoData extends PedidoHandler
 {
     // Atributo genérico para manejo de errores.
     private $data_error = null;
 
     /*
-    *   Métodos para validar y establecer los datos.
-    */
+     *   Métodos para validar y establecer los datos.
+     */
     public function setIdPedido($value)
     {
         if (Validator::validateNaturalNumber($value)) {
-            $this->id_pedido = $value;
+            $this->id = $value;
             return true;
         } else {
             $this->data_error = 'El identificador del pedido es incorrecto';
