@@ -23,9 +23,12 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'No hay pedidos disponibles';
                 }
                 break;
-                //Acción para rellenar la tabla principal de pedidos.
+                //Acción para rellenar la tabla principal del modal de pedidos.
             case 'readAllDetallePedido':
-                if ($result['dataset'] = $pedido->readAllDetallePedido()) {
+                if (!$pedido->setIdPedido($_POST['id_pedido'])) {
+                    $result['error'] = $pedido->getDataError();
+                } 
+                elseif ($result['dataset'] = $pedido->readAllDetallePedido()) {
                     $result['status'] = 1;
                 } else {
                     $result['error'] = 'No hay detalles de pedidos disponibles';
@@ -35,16 +38,16 @@ if (isset($_GET['action'])) {
             case 'finishOrder':
                 if ($pedido->finishOrder()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Pedido finalizado correctamente';
+                    $result['message'] = 'Pedido finalizado con éxito';
                 } else {
                     $result['error'] = 'Ocurrió un problema al finalizar el pedido';
                 }
                 break;
             // Acción para buscar filas.
             case 'searchRows':
-                if (!Validator::validateSearch($_POST['search'])) {
+                if (isset($_POST['search']) && Validator::validateSearch($_POST['search'])) {
                     $result['error'] = Validator::getSearchError();
-                } elseif ($result['dataset'] = $color->searchRows()) {
+                } elseif ($result['dataset'] = $pedido->searchRows()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
                 } else {
