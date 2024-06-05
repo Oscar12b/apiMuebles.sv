@@ -1,13 +1,13 @@
 <?php
 // Se incluye la clase del modelo.
-require_once('..\..\models\data\clientes_data.php');
+require_once('..\..\models\data\pedidos_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
     // Se crea una sesión o se reanuda la actual para poder utilizar variables de sesión en el script.
     session_start();
     // Se instancia la clase correspondiente.
-    $cliente = new ClienteData;
+    $pedido = new PedidoData;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
     $result = array('status' => 0, 'session' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null, 'username' => null);
     // Se verifica si existe una sesión iniciada como cliente, de lo contrario se finaliza el script con un mensaje de error.
@@ -16,25 +16,32 @@ if (isset($_GET['action'])) {
 
     switch ($_GET['action']) {
         case 'readhistory':
-            if (!$cliente->setId($_SESSION['idCliente'])) {
-                echo $_SESSION['idCliente']; // Imprime el valor de $_SESSION['idCliente']
-                $result['error'] = 'cliente incorrecto';
-            } elseif ($result['dataset'] = $cliente->readhistory()) {
+            if ($result['dataset'] = $pedido->readhistory()) {
                 $result['status'] = 1;
+                $result['message'] = '';
             } else {
-                $result['error'] = 'cliente inexistente';
+                $result['error'] = 'No hay coincidencias';
             }
             break;;
         case 'searchRows':
                 if (!Validator::validateSearch($_POST['search'])) {
                     $result['error'] = Validator::getSearchError();
-                } elseif ($result['dataset'] = $cliente->searchRows()) {
+                } elseif ($result['dataset'] = $pedido->searchRows()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
                 } else {
                     $result['error'] = 'No hay coincidencias';
                 }
                 break;
+                case 'readAllDetallePedido':
+                    if (!$pedido->setIdPedido($_POST['idPedido'])) {
+                        $result['error'] = $pedido->getDataError();
+                    } elseif ($result['dataset'] = $pedido->readAllDetallePedido()) {
+                        $result['status'] = 1;
+                    } else {
+                        $result['error'] = 'No hay detalles de pedidos disponibles';
+                    }
+                    break;
         default:
             $result['error'] = 'Acción no disponible';
     }
