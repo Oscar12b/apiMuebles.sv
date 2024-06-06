@@ -9,30 +9,13 @@ if (isset($_GET['action'])) {
     // Se instancia la clase correspondiente.
     $cliente = new ClienteData;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
-    $result = array('status' => 0, 'session' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null, 'username' => null);
+    $result = array('status' => 0, 'session' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null, 'username' => null, 'id' => null);
     // Se verifica si existe una sesión iniciada como cliente, de lo contrario se finaliza el script con un mensaje de error.
     if (isset($_SESSION['idCliente'])) {
         $result['session'] = 1;
         // Se compara la acción a realizar cuando un cliente ha iniciado sesión.
         switch ($_GET['action']) {
-            case 'searchRows':
-                if (!Validator::validateSearch($_POST['search'])) {
-                    $result['error'] = Validator::getSearchError();
-                } elseif ($result['dataset'] = $cliente->searchRows()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
-                } else {
-                    $result['error'] = 'No hay coincidencias';
-                }
-                break;
-            case 'readAll':
-                if ($result['dataset'] = $cliente->readAll()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
-                } else {
-                    $result['error'] = 'No existen cliente registrados';
-                }
-                break;
+
             case 'readOne':
                 if (!$cliente->setId($_POST['idcliente'])) {
                     $result['error'] = 'cliente incorrecto';
@@ -42,37 +25,11 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'cliente inexistente';
                 }
                 break;
-            case 'updateRow':
-                $_POST = Validator::validateForm($_POST);
-                if (
-                    !$cliente->setId($_POST['idcliente']) or
-                    !$cliente->setNombre($_POST['nombrecliente']) or
-                    !$cliente->setApellido($_POST['apellidocliente']) or
-                    !$cliente->setCorreo($_POST['correocliente'])
-                ) {
-                    $result['error'] = $cliente->getDataError();
-                } elseif ($cliente->updateRow()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'cliente modificado correctamente';
-                } else {
-                    $result['error'] = 'Ocurrió un problema al modificar el cliente';
-                }
-                break;
-            case 'deleteRow':
-                if ($_POST['idcliente'] == $_SESSION['idcliente']) {
-                    $result['error'] = 'No se puede eliminar a sí mismo';
-                } elseif (!$cliente->setId($_POST['idcliente'])) {
-                    $result['error'] = $cliente->getDataError();
-                } elseif ($cliente->deleteRow()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'cliente eliminado correctamente';
-                } else {
-                    $result['error'] = 'Ocurrió un problema al eliminar el cliente';
-                }
-                break;
+
             case 'getUser':
                 if (isset($_SESSION['aliasCliente'])) {
                     $result['status'] = 1;
+                    $result['id'] = $_SESSION['idCliente'];
                     $result['username'] = $_SESSION['aliasCliente'];
                 } else {
                     $result['error'] = 'Alias de cliente indefinido';
@@ -131,14 +88,6 @@ if (isset($_GET['action'])) {
     } else {
         // Se compara la acción a realizar cuando el cliente no ha iniciado sesión.
         switch ($_GET['action']) {
-            case 'readUsers':
-                if ($cliente->readAll()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Debe autenticarse para ingresar';
-                } else {
-                    $result['error'] = 'Debe crear un cliente para comenzar';
-                }
-                break;
 
             case 'signUp':
                 $_POST = Validator::validateForm($_POST);
@@ -159,7 +108,7 @@ if (isset($_GET['action'])) {
 
                     $result['error'] = 'Contraseñas diferentes';
 
-                } elseif ($cliente->checkDuplicate($_POST['correoCliente'], $_POST['aliasCliente'])) {
+                } elseif ($cliente->checkDuplicate($_POST['aliasCliente'], $_POST['correoCliente'], $_POST['duiCliente'])) {
 
                     $result['error'] = 'El correo o alias ya se encuentra registrado';
 
@@ -184,6 +133,9 @@ if (isset($_GET['action'])) {
 
                 if ($cliente->checkUser($_POST['alias'], $_POST['clave'])) {
                     $result['status'] = 1;
+                    $result['session'] = 1;
+                    $result['username'] = $_SESSION['aliasCliente'];
+                    $result['id'] = $_SESSION['idCliente'];
                     $result['message'] = 'Autenticación correcta';
                 } else {
                     $result['error'] = 'Credenciales incorrectas';

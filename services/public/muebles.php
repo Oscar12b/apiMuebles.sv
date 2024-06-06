@@ -9,110 +9,74 @@ if (isset($_GET['action'])) {
     // Se instancia la clase correspondiente.
     $producto = new ProductoHandler;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
-    $result = array('status' => 0, 'session' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null, 'username' => null);
+    $result = array('status' => 0, 'session' => 0, 'message' => null, 'dataset' => null, 'dataset2' => null, 'dataset3' => null, 'error' => null, 'exception' => null, 'username' => null);
     // Se verifica si existe una sesión iniciada como producto, de lo contrario se finaliza el script con un mensaje de error.
-    if (isset($_SESSION['idproducto'])) {
+    /*if (isset($_SESSION['idCliente'])) {
         $result['session'] = 1;
         // Se compara la acción a realizar cuando un producto ha iniciado sesión.
         switch ($_GET['action']) {
-            case 'searchRows':
-                if (!Validator::validateSearch($_POST['search'])) {
-                    $result['error'] = Validator::getSearchError();
-                } elseif ($result['dataset'] = $producto->searchRows()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
-                } else {
-                    $result['error'] = 'No hay coincidencias';
-                }
-                break;
 
-            case 'readOne':
-                if (!$producto->setId($_POST['idproducto'])) {
-                    $result['error'] = 'producto incorrecto';
-                } elseif ($result['dataset'] = $producto->readOne()) {
-                    $result['status'] = 1;
-                } else {
-                    $result['error'] = 'producto inexistente';
-                }
-                break;
+        
 
-            case 'logOut':
-                if (session_destroy()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Sesión eliminada correctamente';
-                } else {
-                    $result['error'] = 'Ocurrió un problema al cerrar la sesión';
-                }
-                break;
-            case 'readProfile':
-                if ($result['dataset'] = $producto->readProfile()) {
-                    $result['status'] = 1;
-                } else {
-                    $result['error'] = 'Ocurrió un problema al leer el perfil';
-                }
-                break;
-            case 'editProfile':
-                $_POST = Validator::validateForm($_POST);
-                if (
-                    !$producto->setNombre($_POST['nombreproducto']) or
-                    !$producto->setApellido($_POST['apellidoproducto']) or
-                    !$producto->setCorreo($_POST['correoproducto']) or
-                    !$producto->setAlias($_POST['aliasproducto'])
-                ) {
-                    $result['error'] = $producto->getDataError();
-                } elseif ($producto->editProfile()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Perfil modificado correctamente';
-                    $_SESSION['aliasproducto'] = $_POST['aliasproducto'];
-                } else {
-                    $result['error'] = 'Ocurrió un problema al modificar el perfil';
-                }
-                break;
-            case 'changePassword':
-                $_POST = Validator::validateForm($_POST);
-                if (!$producto->checkPassword($_POST['claveActual'])) {
-                    $result['error'] = 'Contraseña actual incorrecta';
-                } elseif ($_POST['claveNueva'] != $_POST['confirmarClave']) {
-                    $result['error'] = 'Confirmación de contraseña diferente';
-                } elseif (!$producto->setClave($_POST['claveNueva'])) {
-                    $result['error'] = $producto->getDataError();
-                } elseif ($producto->changePassword()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Contraseña cambiada correctamente';
-                } else {
-                    $result['error'] = 'Ocurrió un problema al cambiar la contraseña';
-                }
-                break;
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
         }
-    } else {
-        // Se compara la acción a realizar cuando el producto no ha iniciado sesión.
-        switch ($_GET['action']) {
+    } else {*/
+    // Se compara la acción a realizar cuando el producto no ha iniciado sesión.
+    switch ($_GET['action']) {
 
-            case 'readAll':
-                if ($result['dataset'] = $producto->readAllTienda()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
-                } else {
-                    $result['error'] = 'No existen producto registrados';
-                }
-                break;
+        case 'readOne':
+            if (!$producto->setId($_POST['idProducto'])) {
+                $result['error'] = 'producto incorrecto';
+            } elseif ($result['dataset'] = $producto->readOne()) {
+                $result['status'] = 1;
+            } else {
+                $result['error'] = 'producto inexistente';
+            }
+            break;
 
-            case 'searchRows':
-                if (!Validator::validateSearch($_POST['buscador'])) {
-                    $result['error'] = Validator::getSearchError();
-                } elseif ($result['dataset'] = $producto->searchRowsTienda()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
-                } else {
-                    $result['error'] = 'No hay coincidencias';
-                }
-                break;
+        case 'readAll': //check[X]
+            if (($result['dataset'] = $producto->readAllTienda()) && ($result['dataset2'] = $producto->readMinMax())) {
+                $result['status'] = 1;
+                $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
+            } else {
+                $result['error'] = 'No existen producto registrados';
+            }
+            break;
 
-            default:
-                $result['error'] = 'Acción no disponible fuera de la sesión';
-        }
+        case 'searchRows': //check[X]
+            if (!Validator::validateSearch($_POST['buscador'])) {
+                $result['error'] = Validator::getSearchError();
+            } elseif ($result['dataset'] = $producto->searchRowsTienda()) {
+                $result['status'] = 1;
+                $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
+            } else {
+                $result['error'] = 'No hay coincidencias';
+            }
+            break;
+
+        case 'filterRows'://check[X]
+            $filters = [
+                'categoriaMueble' => $_POST['categoriaMueble'] ?? null,
+                'materialMueble' => $_POST['materialMueble'] ?? null,
+                'colorMueble' => $_POST['colorMueble'] ?? null,
+                'precioMinimo' => $_POST['precioMinimo'] ?? null,
+                'precioMaximo' => $_POST['precioMaximo'] ?? null,
+            ];
+
+            if (($result['dataset'] = $producto->filterRows($filters))) {
+                $result['status'] = 1;
+                $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
+            } else {
+                $result['error'] = 'No hay coincidencias';
+            }
+            break;
+
+
+
+        default:
+            $result['error'] = 'Acción no disponible fuera de la sesión';
+        // }
     }
     // Se obtiene la excepción del servidor de base de datos por si ocurrió un problema.
     $result['exception'] = Database::getException();

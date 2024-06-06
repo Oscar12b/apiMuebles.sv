@@ -24,7 +24,7 @@ if (isset($_GET['action'])) {
                 }
                 break;
             //Acción para rellenar la tabla principal del modal de pedidos.
-            case 'readAllDetallePedido':
+            case 'readAllDetallePedido'://check [X]
                 if (!$pedido->setIdPedido($_POST['idPedido'])) {
                     $result['error'] = $pedido->getDataError();
                 } elseif ($result['dataset'] = $pedido->readAllDetallePedido()) {

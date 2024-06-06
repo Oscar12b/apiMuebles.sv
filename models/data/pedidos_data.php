@@ -17,7 +17,7 @@ class PedidoData extends PedidoHandler
     public function setIdPedido($value)
     {
         if (Validator::validateNaturalNumber($value)) {
-            $this->id = $value;
+            $this->id_pedido = $value;
             return true;
         } else {
             $this->data_error = 'El identificador del pedido es incorrecto';
@@ -36,10 +36,10 @@ class PedidoData extends PedidoHandler
         }
     }
 
-    public function setCliente($value)
+    public function setIdCliente($value)
     {
         if (Validator::validateNaturalNumber($value)) {
-            $this->cliente = $value;
+            $this->id_cliente = $value;
             return true;
         } else {
             $this->data_error = 'El identificador del cliente es incorrecto';
@@ -57,6 +57,42 @@ class PedidoData extends PedidoHandler
             return false;
         }
     }
+
+    // constructores para el manejo de los datos de la tabla detalles_pedidos.
+
+    public function setCantidadPedido($value)
+    {
+        if (Validator::validateNaturalNumber($value)) {
+            $this->cantidad_pedido = $value;
+            return true;
+        } else {
+            $this->data_error = 'La cantidad del pedido es incorrecta';
+            return false;
+        }
+    }
+
+    public function setIdMueble($value)
+    {
+        if (Validator::validateNaturalNumber($value)) {
+            $this->id_mueble = $value;
+            return true;
+        } else {
+            $this->data_error = 'El identificador del mueble es incorrecto';
+            return false;
+        }
+    }
+
+    public function setFechaEntrega($value)
+    {
+        if (Validator::validateDate($value)) {
+            $this->fechaEntrega = $value;
+            return true;
+        } else {
+            $this->data_error = 'La fecha de entrega es incorrecta';
+            return false;
+        }
+    }
+
 
     // Método para obtener el error de los datos.
     public function getDataError()

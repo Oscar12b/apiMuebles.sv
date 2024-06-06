@@ -115,35 +115,6 @@ class ProductoHandler
     }
 
 
-    //--------------------Metodos para la parte publica--------------------
-
-    public function searchRowsTienda()
-    {
-        $value = '%' . Validator::getSearchValue() . '%';
-        $sql = 'SELECT id_mueble,imagen,nombre_mueble,precio,precio_antiguo,estado,stock,nombre_categoria,nombre_material 
-        FROM tb_muebles 
-        INNER JOIN tb_categorias 
-        ON tb_muebles.id_categoria = tb_categorias.id_categoria 
-        INNER JOIN tb_materiales 
-        ON tb_muebles.id_material = tb_materiales.id_material
-        WHERE nombre_mueble LIKE ? OR nombre_categoria LIKE ? OR precio LIKE ?
-        OR stock LIKE ? OR nombre_material LIKE ? ORDER BY nombre_mueble';
-        $params = array($value, $value, $value, $value, $value);
-        return Database::getRows($sql, $params);
-    }
-
-    //leer los productos de la tienda
-    public function readAllTienda()
-    {
-        $sql = 'SELECT id_mueble,imagen,nombre_mueble,precio,precio_antiguo,estado,stock,nombre_categoria,nombre_material 
-                FROM tb_muebles 
-                INNER JOIN tb_categorias 
-                ON tb_muebles.id_categoria = tb_categorias.id_categoria 
-                INNER JOIN tb_materiales 
-                ON tb_muebles.id_material = tb_materiales.id_material;';
-
-        return Database::getRows($sql);
-    }
 
     //--------------------Métodos para la tabla producto--------------------
 
@@ -192,5 +163,88 @@ class ProductoHandler
         $params = array($this->categoria);
         return Database::getRows($sql, $params);
     }
+
+
+    ///*********************************************************** */
+    //--------------------Metodos para la parte publica--------------------
+
+    public function searchRowsTienda()
+    {
+        $value = '%' . Validator::getSearchValue() . '%';
+        $sql = 'SELECT id_mueble,imagen,nombre_mueble,precio,precio_antiguo,estado,stock,nombre_categoria,nombre_material 
+         FROM tb_muebles 
+         INNER JOIN tb_categorias 
+         ON tb_muebles.id_categoria = tb_categorias.id_categoria 
+         INNER JOIN tb_materiales 
+         ON tb_muebles.id_material = tb_materiales.id_material
+         WHERE nombre_mueble LIKE ? OR nombre_categoria LIKE ? OR precio LIKE ?
+         OR stock LIKE ? OR nombre_material LIKE ? ORDER BY nombre_mueble';
+        $params = array($value, $value, $value, $value, $value);
+        return Database::getRows($sql, $params);
+    }
+
+    //funcion para leer el precio maximo y minimo de los productos 
+    public function readMinMax()
+    {
+        $sql = 'SELECT MAX(precio) as maximo, MIN(precio) as minimo
+                 FROM tb_muebles';
+        return Database::getRow($sql);
+    }
+
+    //buscar muebles segun su categoria filtro
+    public function filterRows($filters)
+    {
+        $sql = 'SELECT id_mueble, imagen, nombre_mueble, precio, precio_antiguo, estado, stock, nombre_categoria, nombre_material 
+            FROM tb_muebles 
+            INNER JOIN tb_categorias ON tb_muebles.id_categoria = tb_categorias.id_categoria 
+            INNER JOIN tb_materiales ON tb_muebles.id_material = tb_materiales.id_material 
+            WHERE 1=1';
+
+        $params = [];
+
+        if (!empty($filters['categoriaMueble'])) {
+            $sql .= ' AND tb_muebles.id_categoria = ?';
+            $params[] = $filters['categoriaMueble'];
+        }
+
+        if (!empty($filters['materialMueble'])) {
+            $sql .= ' AND tb_muebles.id_material = ?';
+            $params[] = $filters['materialMueble'];
+        }
+
+        if (!empty($filters['colorMueble'])) {
+            $sql .= ' AND tb_muebles.id_color = ?';
+            $params[] = $filters['colorMueble'];
+        }
+
+        if (!empty($filters['precioMinimo'])) {
+            $sql .= ' AND precio >= ?';
+            $params[] = $filters['precioMinimo'];
+        }
+
+        if (!empty($filters['precioMaximo'])) {
+            $sql .= ' AND precio <= ?';
+            $params[] = $filters['precioMaximo'];
+        }
+
+        $sql .= ' ORDER BY nombre_mueble';
+
+        return Database::getRows($sql, $params);
+    }
+
+    //leer los productos de la tienda
+    public function readAllTienda()
+    {
+        $sql = 'SELECT id_mueble,imagen,nombre_mueble,precio,precio_antiguo,estado,stock,nombre_categoria,nombre_material 
+                 FROM tb_muebles 
+                 INNER JOIN tb_categorias 
+                 ON tb_muebles.id_categoria = tb_categorias.id_categoria 
+                 INNER JOIN tb_materiales 
+                 ON tb_muebles.id_material = tb_materiales.id_material;';
+
+        return Database::getRows($sql);
+    }
+
+
 
 }
