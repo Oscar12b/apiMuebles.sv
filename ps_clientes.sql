@@ -21,55 +21,62 @@ BEGIN
     DECLARE v_precio DECIMAL(10,2);
     DECLARE v_cantidad_pedido_actual INT;
 
-    -- Obtener el id_pedido del cliente que tiene un pedido en estado 'en proceso'
+    -- Verificar si existe un pedido en proceso para el cliente
     SELECT id_pedido 
     INTO v_id_pedido 
     FROM tb_pedidos 
     WHERE id_cliente = p_id_cliente AND estado_pedido = 'en proceso'
     LIMIT 1;
 
-    -- Verificar si se encontró un pedido en proceso
-    IF v_id_pedido IS NOT NULL THEN
-        -- Obtener el precio del mueble
-        SELECT precio 
-        INTO v_precio 
-        FROM tb_muebles 
-        WHERE id_mueble = p_id_mueble;
-
-        -- Verificar si ya existe un detalle de pedido para el mueble
-        IF NOT EXISTS (SELECT 1 FROM tb_detalles_pedidos WHERE id_mueble = p_id_mueble AND id_pedido = v_id_pedido) THEN
-            -- Insertar el nuevo detalle de pedido
-            INSERT INTO tb_detalles_pedidos (cantidad_pedido, precio_pedido, id_pedido, id_mueble)
-            VALUES (p_cantidad_pedido, v_precio * p_cantidad_pedido, v_id_pedido, p_id_mueble);
-        ELSE
+    -- Si no existe un pedido en proceso, crear uno
+    IF v_id_pedido IS NULL THEN
+        INSERT INTO tb_pedidos (id_cliente, estado_pedido)
+        VALUES (p_id_cliente, 'en proceso');
         
-            -- Obtener la cantidad actual del pedido
-            SELECT cantidad_pedido 
-            INTO v_cantidad_pedido_actual 
-            FROM tb_detalles_pedidos 
-            WHERE id_mueble = p_id_mueble AND id_pedido = v_id_pedido;
-            
-            -- Actualizar el detalle del pedido con la nueva cantidad
-            UPDATE tb_detalles_pedidos 
-            SET cantidad_pedido = cantidad_pedido + p_cantidad_pedido, 
-                precio_pedido = precio_pedido + (v_precio * p_cantidad_pedido) 
-            WHERE id_mueble = p_id_mueble AND id_pedido = v_id_pedido;
-
-            
-        END IF;
-
-        -- Verificar si el stock ha llegado a cero
-        IF (SELECT stock FROM tb_muebles WHERE id_mueble = p_id_mueble) = 0 THEN
-            UPDATE tb_muebles
-            SET estado = 'agotado'
-            WHERE id_mueble = p_id_mueble;
-        END IF;
-    ELSE
-        -- Manejo de error si no se encuentra un pedido en proceso
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se encontró un pedido en proceso para este cliente.';
+        -- Obtener el id del nuevo pedido creado
+        SET v_id_pedido = LAST_INSERT_ID();
     END IF;
+
+    -- Obtener el precio del mueble
+    SELECT precio 
+    INTO v_precio 
+    FROM tb_muebles 
+    WHERE id_mueble = p_id_mueble;
+
+    -- Verificar si ya existe un detalle de pedido para el mueble
+    IF NOT EXISTS (SELECT 1 FROM tb_detalles_pedidos WHERE id_mueble = p_id_mueble AND id_pedido = v_id_pedido) THEN
+        -- Insertar el nuevo detalle de pedido
+        INSERT INTO tb_detalles_pedidos (cantidad_pedido, precio_pedido, id_pedido, id_mueble)
+        VALUES (p_cantidad_pedido, v_precio * p_cantidad_pedido, v_id_pedido, p_id_mueble);
+    ELSE
+        -- Obtener la cantidad actual del pedido
+        SELECT cantidad_pedido 
+        INTO v_cantidad_pedido_actual 
+        FROM tb_detalles_pedidos 
+        WHERE id_mueble = p_id_mueble AND id_pedido = v_id_pedido;
+        
+        -- Actualizar el detalle del pedido con la nueva cantidad
+        UPDATE tb_detalles_pedidos 
+        SET cantidad_pedido = cantidad_pedido + p_cantidad_pedido, 
+            precio_pedido = precio_pedido + (v_precio * p_cantidad_pedido) 
+        WHERE id_mueble = p_id_mueble AND id_pedido = v_id_pedido;
+    END IF;
+
+    -- Actualizar el stock del mueble
+    UPDATE tb_muebles
+    SET stock = stock - p_cantidad_pedido
+    WHERE id_mueble = p_id_mueble;
+
+    -- Verificar si el stock ha llegado a cero
+    IF (SELECT stock FROM tb_muebles WHERE id_mueble = p_id_mueble) = 0 THEN
+        UPDATE tb_muebles
+        SET estado = 'agotado'
+        WHERE id_mueble = p_id_mueble;
+    END IF;
+
 END //
 DELIMITER ;
+
 
 
 /*-----------------------------------------------------------------------*/
@@ -96,6 +103,8 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+call checkDisponibilidad(2, 2);
 
 
 /*-----------------------------------------------------------------------*/
@@ -172,6 +181,8 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
 
 
 
