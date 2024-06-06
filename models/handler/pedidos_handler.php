@@ -87,10 +87,10 @@ class PedidoHandler
         return Database::executeRow($sql, $params);
     }
 
-    public function checkDisponibilidad()
+    public function checkDisponibilidad($id_detalle, $cantidad)
     {
         $sql = 'CALL checkDisponibilidad(?, ?);';
-        $params = array($this->id_detalle_pedido, $this->cantidad_pedido);
+        $params = array($id_detalle, $cantidad);
         $data = Database::getRow($sql, $params);
 
         if ($data) {
