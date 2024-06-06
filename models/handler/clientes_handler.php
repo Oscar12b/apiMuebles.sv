@@ -46,21 +46,33 @@ class ClienteHandler
         }
     }
 
+    public function checkPassword($password)
+    {
+        $sql = 'SELECT clave_cliente FROM tb_clientes WHERE id_cliente = ?';
+        $params = array($_SESSION['idCliente']);
+        $data = Database::getRow($sql, $params);
+        if ($data && password_verify($password, $data['clave_cliente'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function changePassword()
     {
-        $sql = 'UPDATE cliente
+        $sql = 'UPDATE tb_clientes
                 SET clave_cliente = ?
                 WHERE id_cliente = ?';
-        $params = array($this->clave, $this->id);
+        $params = array($this->clave, $_SESSION['idCliente']);
         return Database::executeRow($sql, $params);
     }
 
     public function editProfile()
     {
         $sql = 'UPDATE cliente
-                SET nombre_cliente = ?, apellido_cliente = ?, correo_cliente = ?, dui_cliente = ?, telefono_cliente = ?, nacimiento_cliente = ?, direccion_cliente = ?
+                SET nombre_cliente = ?, apellido_cliente = ?, correo_cliente = ?, dui_cliente = ?, telefono_cliente = ?, direccion_cliente = ?
                 WHERE id_cliente = ?';
-        $params = array($this->nombre, $this->apellido, $this->correo, $this->dui, $this->telefono, $this->nacimiento, $this->direccion, $this->id);
+        $params = array($this->nombre, $this->apellido, $this->correo, $this->dui, $this->telefono, $this->direccion, $this->id);
         return Database::executeRow($sql, $params);
     }
 
@@ -71,6 +83,14 @@ class ClienteHandler
                 WHERE id_cliente = ?';
         $params = array($this->estado, $this->id);
         return Database::executeRow($sql, $params);
+    }
+
+    public function readProfile(){
+        $sql = 'SELECT id_cliente, nombre_cliente, apellido_cliente, correo_cliente, dui_cliente, telefono_cliente, direccion_cliente
+                FROM tb_clientes
+                WHERE id_cliente = ?';
+        $params = array($_SESSION['idCliente']);
+        return Database::getRow($sql, $params);
     }
 
     /*
@@ -114,6 +134,15 @@ class ClienteHandler
         return Database::getRow($sql, $params);
     }
 
+    public function readOneCliente()
+    {
+        $sql = 'SELECT id_cliente, nombre_cliente, apellido_cliente, correo_cliente, dui_cliente, telefono_cliente, direccion_cliente
+                FROM cliente
+                WHERE id_cliente = ?';
+        $params = array($this->id);
+        return Database::getRow($sql, $params);
+    }
+
     public function updateRow()
     {
         $sql = 'UPDATE cliente
@@ -141,6 +170,6 @@ class ClienteHandler
         return Database::getRow($sql, $params);
     }
 
-
+   
 
 }

@@ -26,6 +26,16 @@ if (isset($_GET['action'])) {
                 }
                 break;
 
+                case 'readOneCliente':
+                    if (!$cliente->setId($_POST['idcliente'])) {
+                        $result['error'] = 'cliente incorrecto';
+                    } elseif ($result['dataset'] = $cliente->readOneCliente()) {
+                        $result['status'] = 1;
+                    } else {
+                        $result['error'] = 'cliente inexistente';
+                    }
+                    break;
+
             case 'getUser':
                 if (isset($_SESSION['aliasCliente'])) {
                     $result['status'] = 1;
