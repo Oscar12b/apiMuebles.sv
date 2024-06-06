@@ -69,10 +69,10 @@ class ClienteHandler
 
     public function editProfile()
     {
-        $sql = 'UPDATE cliente
-                SET nombre_cliente = ?, apellido_cliente = ?, correo_cliente = ?, dui_cliente = ?, telefono_cliente = ?, direccion_cliente = ?
+        $sql = 'UPDATE tb_clientes
+                SET alias_cliente = ?,nombre_cliente = ?, apellido_cliente = ?, correo_cliente = ?, dui_cliente = ?, telefono_cliente = ?, direccion_cliente = ?
                 WHERE id_cliente = ?';
-        $params = array($this->nombre, $this->apellido, $this->correo, $this->dui, $this->telefono, $this->direccion, $this->id);
+        $params = array($this->alias, $this->nombre, $this->apellido, $this->correo, $this->dui, $this->telefono, $this->direccion, $_SESSION['idCliente']);
         return Database::executeRow($sql, $params);
     }
 
@@ -85,7 +85,8 @@ class ClienteHandler
         return Database::executeRow($sql, $params);
     }
 
-    public function readProfile(){
+    public function readProfile()
+    {
         $sql = 'SELECT id_cliente, nombre_cliente, apellido_cliente, correo_cliente, dui_cliente, telefono_cliente, direccion_cliente
                 FROM tb_clientes
                 WHERE id_cliente = ?';
@@ -170,6 +171,6 @@ class ClienteHandler
         return Database::getRow($sql, $params);
     }
 
-   
+
 
 }
