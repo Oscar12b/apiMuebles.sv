@@ -51,7 +51,7 @@ class PedidoHandler
 
     public function readAllDetallePedido()
     {
-        $sql = 'SELECT mu.nombre_mueble, c.nombre_color, m.nombre_material, cat.nombre_categoria, dp.cantidad_pedido, mu.precio 
+        $sql = 'SELECT mu.nombre_mueble, c.nombre_color, m.nombre_material, cat.nombre_categoria, dp.cantidad_pedido, SUM(dp.cantidad_pedido * mu.precio) as Precio
         FROM tb_detalles_pedidos dp
         JOIN tb_muebles mu ON dp.id_mueble = mu.id_mueble
         JOIN tb_colores c ON mu.id_color = c.id_color

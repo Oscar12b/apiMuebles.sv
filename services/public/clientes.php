@@ -125,7 +125,9 @@ if (isset($_GET['action'])) {
                     }
 
                 } else {
+                    echo $_POST['telefonoCliente'];
                     $result['error'] = 'Ocurrió un problema al registrar el cliente';
+                    
                 }
                 break;
             case 'logIn':
