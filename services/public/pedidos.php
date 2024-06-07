@@ -71,10 +71,10 @@ if (isset($_GET['action'])) {
                     $result['error'] = $pedidos->getDataError();
                 } else {
                     // Verificar disponibilidad del stock
-                    $disponibilidad = $pedidos->checkDisponibilidad($_POST['idMueble'], $_POST['cantidad']);
+                    $disponibilidad = $pedidos->checkDisponibilidad($_POST['cantidad'], $_POST['idMueble']);
                     if ($disponibilidad == 0) {
                         $result['status'] = 2;
-                        $result['message'] = 'No hay existencias suficientes';
+                        $result['message'] = 'No hay existencias suficientes' . $disponibilidad . $_POST['cantidad'] . $_POST['idMueble'] ;
                     } elseif ($pedidos->updateAmountOrder()) {
                         $result['status'] = 1;
                         $result['message'] = 'Cantidad actualizada correctamente';

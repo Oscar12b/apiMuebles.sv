@@ -160,25 +160,15 @@ class PedidoHandler
 
     }
 
-    public function finishOrder()
-    {
-        $this->estado = 'Finalizado';
-        $sql = 'UPDATE tb_pedidos
-                SET estado_pedido = ?
-                WHERE id_pedido = ?;';
-        $params = array($this->estado, $this->id);
-        return Database::executeRow($sql, $params);
-    }
 
 
     //----------fUNCION PARA CABIAR LA CANTIDAD DE UN DETALLE PEDIDO DE UN MMUEBLE-------------------
 
     public function updateAmountOrder()
     {
-        $sql = 'UPDATE tb_detalles_pedidos
-                SET cantidad_pedido = ?
-                WHERE id_detalle_pedido = ? AND id_mueble = ?;';
-        $params = array($this->cantidad_pedido, $this->id_detalle_pedido, $this->id_mueble);
+        $sql = 'CALL actualizar_pedido (?,?,? );
+        ';
+        $params = array($this->cantidad_pedido, $this->id_mueble, $this->id_detalle_pedido );
         return Database::executeRow($sql, $params);
     }
 
@@ -208,12 +198,12 @@ class PedidoHandler
     //-------------INICIO DE LOS METODOS PARA EL HISTORIAL DE PEDIDOS-----------------------------------
     public function readhistory()
     {
-        $sql = 'SELECT p.id_pedido, c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido, SUM(d.precio_pedido * d.cantidad_pedido) AS precio_total
-            FROM tb_clientes c
-            INNER JOIN tb_pedidos p ON c.id_cliente = p.id_cliente
-            INNER JOIN tb_detalles_pedidos d ON p.id_pedido = d.id_pedido
-            WHERE c.id_cliente = ?
-            GROUP BY c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido;';
+        $sql = 'SELECT p.id_pedido, c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido, d.precio_pedido, d.cantidad_pedido
+                FROM tb_clientes c
+                INNER JOIN tb_pedidos p ON c.id_cliente = p.id_cliente
+                INNER JOIN tb_detalles_pedidos d ON p.id_pedido = d.id_pedido
+                WHERE c.id_cliente = ?
+                GROUP BY p.id_pedido';
         $params = array($_SESSION['idCliente']);
         return Database::getRows($sql, $params);
     }

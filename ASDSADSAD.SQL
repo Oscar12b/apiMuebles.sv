@@ -184,7 +184,11 @@ BEGIN
     DECLARE diff INT;
 
     -- Calcular la diferencia entre la nueva cantidad y la cantidad antigua
-    SET diff = NEW.cantidad_pedido - OLD.cantidad_pedido;
+    IF (NEW.cantidad_pedido < OLD.cantidad_pedido) THEN
+        SET diff = OLD.cantidad_pedido - NEW.cantidad_pedido;
+    ELSE
+        SET diff = NEW.cantidad_pedido - OLD.cantidad_pedido;
+    END IF;
 
     -- Actualizar el stock en la tabla tb_muebles
     UPDATE tb_muebles
@@ -204,6 +208,7 @@ BEGIN
 END //
 
 DELIMITER ;
+
 
 
 
