@@ -25,7 +25,7 @@ if (isset($_GET['action'])) {
                 break;
             //Acción para rellenar la tabla principal del modal de pedidos.
             case 'readAllDetallePedido'://check [X]
-                if (!$pedido->setIdPedido($_POST['idPedido'])) {
+                if (!$pedido->setIdPedido($_POST['id_pedido'])) {
                     $result['error'] = $pedido->getDataError();
                 } elseif ($result['dataset'] = $pedido->readAllDetallePedido()) {
                     $result['status'] = 1;
@@ -33,9 +33,11 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'No hay detalles de pedidos disponibles';
                 }
                 break;
-            // Acción para finalizar el carrito de compras.
-            case 'finishOrder':
-                if ($pedido->finishOrder()) {
+            // Acción para finalizar el pedido.
+            case 'finishOrder'://check [X]
+                if (!$pedido->setIdPedido($_POST['id_pedido'])) {
+                    $result['error'] = $pedido->getDataError();
+                } elseif ($result['dataset'] = $pedido->finishOrder()) {
                     $result['status'] = 1;
                     $result['message'] = 'Pedido finalizado con éxito';
                 } else {

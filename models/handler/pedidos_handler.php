@@ -58,7 +58,7 @@ class PedidoHandler
         JOIN tb_materiales m ON mu.id_material = m.id_material
         JOIN tb_categorias cat ON mu.id_categoria = cat.id_categoria
         WHERE dp.id_pedido = ?;';
-        $params = array($this->id);
+        $params = array($this->id_pedido);
         return Database::getRows($sql, $params);
     }
 
@@ -68,7 +68,7 @@ class PedidoHandler
         $sql = 'UPDATE tb_pedidos
                 SET estado_pedido = ?
                 WHERE id_pedido = ?;';
-        $params = array($this->estado, $this->id);
+        $params = array($this->estado, $this->id_pedido);
         return Database::executeRow($sql, $params);
     }
 
