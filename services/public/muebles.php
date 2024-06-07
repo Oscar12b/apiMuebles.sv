@@ -7,7 +7,7 @@ if (isset($_GET['action'])) {
     // Se crea una sesión o se reanuda la actual para poder utilizar variables de sesión en el script.
     session_start();
     // Se instancia la clase correspondiente.
-    $producto = new ProductoHandler;
+    $producto = new ProductoData;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
     $result = array('status' => 0, 'session' => 0, 'message' => null, 'dataset' => null, 'dataset2' => null, 'dataset3' => null, 'error' => null, 'exception' => null, 'username' => null);
     // Se verifica si existe una sesión iniciada como producto, de lo contrario se finaliza el script con un mensaje de error.
@@ -26,9 +26,9 @@ if (isset($_GET['action'])) {
     switch ($_GET['action']) {
 
         case 'readOne':
-            if (!$producto->setId($_POST['idProducto'])) {
+            if (!$producto->setId($_POST['idMueble'])) {
                 $result['error'] = 'producto incorrecto';
-            } elseif ($result['dataset'] = $producto->readOne()) {
+            } elseif ($result['dataset'] = $producto->readRow()) {
                 $result['status'] = 1;
             } else {
                 $result['error'] = 'producto inexistente';

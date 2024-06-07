@@ -91,15 +91,15 @@ class PedidoHandler
     public function createOrder()
     {
         $sql = 'INSERT INTO tb_pedidos(id_cliente, fecha_entrega, direccion_pedido, estado_pedido) 
-                VALUES(?, ?, (SELECT direccion_cliente FROM tb_clientes WHERE id_cliente = ?), ?);';
-        $params = array($this->id_cliente, $this->fechaEntrega, $this->id_cliente, 'en proceso');
+                VALUES(?, NOW() + INTERVAL 7 DAY, (SELECT direccion_cliente FROM tb_clientes WHERE id_cliente = ?), ?);';
+        $params = array($this->id_cliente, $this->id_cliente, 'en proceso');
         return Database::executeRow($sql, $params);
     }
 
-    public function checkDisponibilidad()
+    public function checkDisponibilidad($id_detalle, $cantidad)
     {
         $sql = 'CALL checkDisponibilidad(?, ?);';
-        $params = array($this->id_detalle_pedido, $this->cantidad_pedido);
+        $params = array($id_detalle, $cantidad);
         $data = Database::getRow($sql, $params);
 
         if ($data) {
@@ -157,7 +157,19 @@ class PedidoHandler
 
         $params = array($this->id_cliente, 'en proceso');
         return Database::getRows($sql, $params);
+
     }
+
+    public function finishOrder()
+    {
+        $this->estado = 'Finalizado';
+        $sql = 'UPDATE tb_pedidos
+                SET estado_pedido = ?
+                WHERE id_pedido = ?;';
+        $params = array($this->estado, $this->id);
+        return Database::executeRow($sql, $params);
+    }
+
 
     //----------fUNCION PARA CABIAR LA CANTIDAD DE UN DETALLE PEDIDO DE UN MMUEBLE-------------------
 
@@ -187,6 +199,42 @@ class PedidoHandler
                 WHERE id_pedido = ?;';
         $params = array('pendiente', $this->id_pedido);
         return Database::executeRow($sql, $params);
+    }
+
+    //-------FIN DE LOS METODOS OCUPADOS PARA EL CARRITO-----------------------
+
+
+    ///********************************************************************************************** */
+    //-------------INICIO DE LOS METODOS PARA EL HISTORIAL DE PEDIDOS-----------------------------------
+    public function readhistory()
+    {
+        $sql = 'SELECT p.id_pedido, c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido, SUM(d.precio_pedido * d.cantidad_pedido) AS precio_total
+            FROM tb_clientes c
+            INNER JOIN tb_pedidos p ON c.id_cliente = p.id_cliente
+            INNER JOIN tb_detalles_pedidos d ON p.id_pedido = d.id_pedido
+            WHERE c.id_cliente = ?
+            GROUP BY c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido;';
+        $params = array($_SESSION['idCliente']);
+        return Database::getRows($sql, $params);
+    }
+
+    public function readDetallesPedidos()
+    {
+        $sql = 'SELECT d.id_detalle_pedido ,m.imagen, m.nombre_mueble, c.nombre_color, mt.nombre_material, d.cantidad_pedido, m.precio, d.precio_pedido
+        FROM tb_detalles_pedidos d
+        JOIN tb_muebles m ON d.id_mueble = m.id_mueble
+        JOIN tb_colores c ON m.id_color = c.id_color
+        JOIN tb_materiales mt ON m.id_material = mt.id_material
+        WHERE d.id_pedido = ?;';
+        $params = array($this->id_pedido);
+        return Database::getRows($sql, $params);
+    }
+
+    public function readEstadoPedido()
+    {
+        $sql = 'SELECT estado_pedido FROM tb_pedidos WHERE id_pedido = ?;';
+        $params = array($this->id_pedido);
+        return Database::getRow($sql, $params);
     }
 
 }

@@ -88,6 +88,29 @@ class ProductoHandler
         return Database::getRow($sql, $params);
     }
 
+    public function readRow()
+    {
+        $sql = 'SELECT 
+        m.nombre_mueble,
+        m.descripcion_mueble,
+        m.precio,
+        m.imagen,
+        m.stock,
+        m.estado,
+        m.precio_antiguo,
+        m.id_mueble,
+        (
+            SELECT AVG(v.valoracion) 
+            FROM tb_valoraciones v
+            INNER JOIN tb_detalles_pedidos dp ON v.id_detalle_pedido = dp.id_detalle_pedido
+            WHERE dp.id_mueble = m.id_mueble
+        ) AS puntaje
+        FROM 
+            tb_muebles m; WHERE id_mueble = ?';
+        $params = array($this->id);
+        return Database::getRow($sql, $params);
+    }
+
     public function readFilename()
     {
         $sql = 'SELECT imagen

@@ -26,15 +26,15 @@ if (isset($_GET['action'])) {
                 }
                 break;
 
-                case 'readOneCliente':
-                    if (!$cliente->setId($_POST['idcliente'])) {
-                        $result['error'] = 'cliente incorrecto';
-                    } elseif ($result['dataset'] = $cliente->readOneCliente()) {
-                        $result['status'] = 1;
-                    } else {
-                        $result['error'] = 'cliente inexistente';
-                    }
-                    break;
+            case 'readOneCliente':
+                if (!$cliente->setId($_POST['idcliente'])) {
+                    $result['error'] = 'cliente incorrecto';
+                } elseif ($result['dataset'] = $cliente->readOneCliente()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'cliente inexistente';
+                }
+                break;
 
             case 'getUser':
                 if (isset($_SESSION['aliasCliente'])) {
@@ -63,16 +63,20 @@ if (isset($_GET['action'])) {
             case 'editProfile':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$cliente->setNombre($_POST['nombrecliente']) or
-                    !$cliente->setApellido($_POST['apellidocliente']) or
-                    !$cliente->setCorreo($_POST['correocliente']) or
-                    !$cliente->setAlias($_POST['aliascliente'])
+                    !$cliente->setNombre($_POST['nombreCliente']) or
+                    !$cliente->setApellido($_POST['apellidoCliente']) or
+                    !$cliente->setCorreo($_POST['correCliente']) or
+                    !$cliente->setAlias($_POST['aliasCliente']) or
+                    !$cliente->setDui($_POST['duiCliente']) or
+                    !$cliente->setTelefono($_POST['telefonoCliente']) or
+                    !$cliente->setDireccion($_POST['direccionCliente'])
+
                 ) {
                     $result['error'] = $cliente->getDataError();
                 } elseif ($cliente->editProfile()) {
                     $result['status'] = 1;
                     $result['message'] = 'Perfil modificado correctamente';
-                    $_SESSION['aliascliente'] = $_POST['aliascliente'];
+                    $_SESSION['aliasCliente'] = $_POST['aliasCliente'];
                 } else {
                     $result['error'] = 'Ocurrió un problema al modificar el perfil';
                 }
@@ -137,7 +141,7 @@ if (isset($_GET['action'])) {
                 } else {
                     echo $_POST['telefonoCliente'];
                     $result['error'] = 'Ocurrió un problema al registrar el cliente';
-                    
+
                 }
                 break;
             case 'logIn':
