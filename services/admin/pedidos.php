@@ -62,6 +62,20 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'No hay pedidos disponibles';
                 }
                 break;
+            case 'readPrecioTotal':
+                if ($result['dataset'] = $pedido->readPrecioTotal()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'No hay pedidos disponibles';
+                }
+                break;
+            case 'readCantidadMuebles':
+                if ($result['dataset'] = $pedido->readCantidadMuebles()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'No hay pedidos disponibles';
+                }
+                break;
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
         }

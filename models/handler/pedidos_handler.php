@@ -237,5 +237,26 @@ class PedidoHandler
         return Database::getRows($sql);
     }
 
+    public function readPrecioTotal()
+    {
+        $sql = 'SELECT SUM(dp.precio_pedido) AS total_precio,MONTHNAME(p.fecha_pedido) AS nombre_mes
+                FROM tb_pedidos p
+                JOIN tb_detalles_pedidos dp ON p.id_pedido = dp.id_pedido
+                WHERE p.estado_pedido = "entregado"
+                GROUP BY nombre_mes
+                ORDER BY MONTH(fecha_pedido)';
+        return Database::getRows($sql);
+    }
+
+    public function readCantidadMuebles()
+    {
+        $sql = 'SELECT MONTHNAME(p.fecha_pedido) AS nombre_mes, COUNT(dp.id_detalle_pedido) AS cantidad_muebles_vendidos
+                FROM tb_pedidos p
+                JOIN tb_detalles_pedidos dp ON p.id_pedido = dp.id_pedido
+                WHERE p.estado_pedido = "entregado"
+                GROUP BY nombre_mes
+                ORDER BY MONTH(p.fecha_pedido)';
+        return Database::getRows($sql);
+    }
 }
 ?>
