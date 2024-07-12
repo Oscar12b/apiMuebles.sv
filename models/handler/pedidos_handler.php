@@ -227,5 +227,15 @@ class PedidoHandler
         return Database::getRow($sql, $params);
     }
 
+    public function readPedidoEntrega()
+    {
+        $sql = 'SELECT COUNT(*) AS cantidad_pedidos_entregados, MONTHNAME(fecha_entrega) AS mes_entrega
+                FROM tb_pedidos
+                WHERE estado_pedido = "entregado"
+                GROUP BY mes_entrega
+                ORDER BY MONTH(fecha_entrega);';
+        return Database::getRows($sql);
+    }
+
 }
 ?>

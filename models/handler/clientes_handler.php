@@ -170,6 +170,15 @@ class ClienteHandler
         return Database::getRow($sql, $params);
     }
 
+    public function grafic()
+    {
+        $sql = 'SELECT COUNT(*) AS cantidad_clientes, MONTHNAME(fecha_creacion) AS mes_registro
+                FROM tb_clientes
+                GROUP BY mes_registro
+                ORDER BY MONTH(fecha_creacion);';
+        return Database::getRows($sql);
+    }
+
 
 
 }
