@@ -275,5 +275,16 @@ class PedidoHandler
         $params = array($this->id_pedido);
         return Database::getRows($sql, $params);
     }
+
+    public function topPedido()
+    {
+        $sql = 'SELECT m.nombre_mueble, SUM(dp.cantidad_pedido) AS total_vendido
+                FROM tb_muebles m
+                INNER JOIN tb_detalles_pedidos dp ON m.id_mueble = dp.id_mueble
+                GROUP BY m.id_mueble, m.nombre_mueble
+                ORDER BY total_vendido DESC
+                LIMIT 5';
+    return Database::getRows($sql);
+    }
 }
 ?>
