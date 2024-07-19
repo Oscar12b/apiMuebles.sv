@@ -230,21 +230,23 @@ class PedidoHandler
     public function readPedidoEntrega()
     {
         $sql = 'SELECT COUNT(*) AS cantidad_pedidos_entregados, MONTHNAME(fecha_entrega) AS mes_entrega
-                FROM tb_pedidos
-                WHERE estado_pedido = "Finalizado"
-                GROUP BY mes_entrega
-                ORDER BY MONTH(fecha_entrega);';
+                FROM  tb_pedidos
+                WHERE estado_pedido = "entregado"
+                AND YEAR(fecha_entrega) = YEAR(CURDATE())
+                GROUP BY MONTH(fecha_entrega), MONTHNAME(fecha_entrega) 
+                ORDER BY MONTH(fecha_entrega)';
         return Database::getRows($sql);
     }
 
     public function readPrecioTotal()
     {
-        $sql = 'SELECT SUM(dp.precio_pedido) AS total_precio,MONTHNAME(p.fecha_pedido) AS nombre_mes
+        $sql = 'SELECT SUM(dp.precio_pedido) AS total_precio, MONTHNAME(p.fecha_pedido) AS nombre_mes
                 FROM tb_pedidos p
-                JOIN tb_detalles_pedidos dp ON p.id_pedido = dp.id_pedido
-                WHERE p.estado_pedido = "Finalizado"
-                GROUP BY nombre_mes
-                ORDER BY MONTH(fecha_pedido)';
+                JOIN  tb_detalles_pedidos dp ON p.id_pedido = dp.id_pedido
+                WHERE p.estado_pedido = "entregado" 
+                AND YEAR(p.fecha_pedido) = YEAR(CURDATE())
+                GROUP BY nombre_mes, MONTH(p.fecha_pedido)
+                ORDER BY  MONTH(p.fecha_pedido)';
         return Database::getRows($sql);
     }
 
@@ -253,7 +255,7 @@ class PedidoHandler
         $sql = 'SELECT MONTHNAME(p.fecha_pedido) AS nombre_mes, COUNT(dp.id_detalle_pedido) AS cantidad_muebles_vendidos
                 FROM tb_pedidos p
                 JOIN tb_detalles_pedidos dp ON p.id_pedido = dp.id_pedido
-                WHERE p.estado_pedido = "Finalizado"
+                WHERE p.estado_pedido = "entregado" AND YEAR(p.fecha_pedido) = YEAR(CURDATE())
                 GROUP BY nombre_mes
                 ORDER BY MONTH(p.fecha_pedido)';
         return Database::getRows($sql);
@@ -281,6 +283,8 @@ class PedidoHandler
         $sql = 'SELECT m.nombre_mueble, SUM(dp.cantidad_pedido) AS total_vendido
                 FROM tb_muebles m
                 INNER JOIN tb_detalles_pedidos dp ON m.id_mueble = dp.id_mueble
+                INNER JOIN tb_pedidos p ON dp.id_pedido = p.id_pedido
+                WHERE YEAR(p.fecha_pedido) = YEAR(CURDATE())  
                 GROUP BY m.id_mueble, m.nombre_mueble
                 ORDER BY total_vendido DESC
                 LIMIT 5';
