@@ -48,7 +48,7 @@ try {
         $pdf->cell(30, 10, 'Material', 1, 0, 'C', 1);
         $pdf->cell(30, 10, 'Categoría', 1, 0, 'C', 1);
         $pdf->cell(30, 10, 'Cantidad', 1, 0, 'C', 1);
-        $pdf->cell(30, 10, 'Precio (US$)', 1, 1, 'C', 1);
+        $pdf->cell(30, 10, 'Precio', 1, 1, 'C', 1);
 
         // Se establece la fuente para los datos de los productos.
         $pdf->setFont('Arial', '', 11);
@@ -65,7 +65,7 @@ try {
             $pdf->cell(30, 10, $row['precio_pedido'], 1, 1);
         }
     } else {
-        $pdf->cell(0, 10, $pdf->encodeString('No hay pedidos para la categoría'), 1, 1);
+        $pdf->cell(0, 10, $pdf->encodeString('No hay pedidos'), 1, 1);
     }
 
     // Se llama implícitamente al método footer() y se envía el documento al navegador web.
