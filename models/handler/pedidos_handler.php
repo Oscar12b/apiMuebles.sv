@@ -168,7 +168,7 @@ class PedidoHandler
     {
         $sql = 'CALL actualizar_pedido (?,?,? );
         ';
-        $params = array($this->cantidad_pedido, $this->id_mueble, $this->id_detalle_pedido );
+        $params = array($this->cantidad_pedido, $this->id_mueble, $this->id_detalle_pedido);
         return Database::executeRow($sql, $params);
     }
 
@@ -257,6 +257,23 @@ class PedidoHandler
                 GROUP BY nombre_mes
                 ORDER BY MONTH(p.fecha_pedido)';
         return Database::getRows($sql);
+    }
+
+    /*
+     *   Métodos para generar reportes.
+     */
+    public function productosPedido()
+    {
+        $sql = 'SELECT mu.nombre_mueble, c.nombre_color, m.nombre_material, cat.nombre_categoria, dp.cantidad_pedido, SUM(dp.cantidad_pedido * mu.precio) as Precio
+                FROM tb_detalles_pedidos dp
+                JOIN tb_muebles mu ON dp.id_mueble = mu.id_mueble
+                JOIN tb_colores c ON mu.id_color = c.id_color
+                JOIN tb_materiales m ON mu.id_material = m.id_material
+                JOIN tb_categorias cat ON mu.id_categoria = cat.id_categoria
+                WHERE dp.id_pedido = ?
+                ORDER BY id_pedido';
+        $params = array($this->id_pedido);
+        return Database::getRows($sql, $params);
     }
 }
 ?>
