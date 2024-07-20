@@ -49,19 +49,6 @@ class PedidoHandler
         return Database::getRows($sql, $params);
     }
 
-    public function readAllDetallePedido()
-    {
-        $sql = 'SELECT mu.nombre_mueble, c.nombre_color, m.nombre_material, cat.nombre_categoria, dp.cantidad_pedido, mu.precio
-        FROM tb_detalles_pedidos dp
-        JOIN tb_muebles mu ON dp.id_mueble = mu.id_mueble
-        JOIN tb_colores c ON mu.id_color = c.id_color
-        JOIN tb_materiales m ON mu.id_material = m.id_material
-        JOIN tb_categorias cat ON mu.id_categoria = cat.id_categoria
-        WHERE dp.id_pedido = ?;';
-        $params = array($this->id_pedido);
-        return Database::getRows($sql, $params);
-    }
-
     public function finishOrder()
     {
         $this->estado = 'Finalizado';
@@ -234,7 +221,7 @@ class PedidoHandler
                 WHERE estado_pedido = "entregado"
                 AND YEAR(fecha_entrega) = YEAR(CURDATE())
                 GROUP BY MONTH(fecha_entrega), MONTHNAME(fecha_entrega) 
-                ORDER BY MONTH(fecha_entrega)';
+                ORDER BY MONTH(fecha_entrega);';
         return Database::getRows($sql);
     }
 
@@ -246,7 +233,7 @@ class PedidoHandler
                 WHERE p.estado_pedido = "entregado" 
                 AND YEAR(p.fecha_pedido) = YEAR(CURDATE())
                 GROUP BY nombre_mes, MONTH(p.fecha_pedido)
-                ORDER BY  MONTH(p.fecha_pedido)';
+                ORDER BY  MONTH(p.fecha_pedido);';
         return Database::getRows($sql);
     }
 
@@ -260,18 +247,6 @@ class PedidoHandler
                 ORDER BY MONTH(p.fecha_pedido)';
         return Database::getRows($sql);
     }
-
-    public function topPedido()
-    {
-        $sql = 'SELECT m.nombre_mueble, SUM(dp.cantidad_pedido) AS total_vendido
-                FROM tb_muebles m
-                INNER JOIN tb_detalles_pedidos dp ON m.id_mueble = dp.id_mueble
-                GROUP BY m.id_mueble, m.nombre_mueble
-                ORDER BY total_vendido DESC
-                LIMIT 5';
-        return Database::getRows($sql);
-    }
-
     /*
      *   Métodos para generar reportes.
      */
@@ -288,16 +263,57 @@ class PedidoHandler
         $params = array($this->id_pedido);
         return Database::getRows($sql, $params);
     }
-
-    public function pedidosFinalizados()
+    public function topPedido()
     {
         $sql = 'SELECT m.nombre_mueble, SUM(dp.cantidad_pedido) AS total_vendido
                 FROM tb_muebles m
                 INNER JOIN tb_detalles_pedidos dp ON m.id_mueble = dp.id_mueble
+                INNER JOIN tb_pedidos p ON dp.id_pedido = p.id_pedido
+                WHERE YEAR(p.fecha_pedido) = YEAR(CURDATE())  
                 GROUP BY m.id_mueble, m.nombre_mueble
                 ORDER BY total_vendido DESC
                 LIMIT 5';
         return Database::getRows($sql);
+    }
+
+    /*
+     *   Métodos para generar reportes.
+     */
+
+    public function readAllDetallePedido()
+    {
+        $sql = 'SELECT mu.nombre_mueble, c.nombre_color, m.nombre_material, cat.nombre_categoria, dp.cantidad_pedido, mu.precio
+        FROM tb_detalles_pedidos dp
+        JOIN tb_muebles mu ON dp.id_mueble = mu.id_mueble
+        JOIN tb_colores c ON mu.id_color = c.id_color
+        JOIN tb_materiales m ON mu.id_material = m.id_material
+        JOIN tb_categorias cat ON mu.id_categoria = cat.id_categoria
+        WHERE dp.id_pedido = ?;';
+        $params = array($this->id_pedido);
+        return Database::getRows($sql, $params);
+    }
+
+
+    public function pedidosFinalizados()
+    {
+        $sql = 'SELECT p.id_pedido, dp.cantidad_pedido, c.nombre_cliente, p.fecha_pedido, p.fecha_entrega, p.estado_pedido, dp.precio_pedido 
+        FROM tb_pedidos p
+        JOIN tb_detalles_pedidos dp ON p.id_pedido = dp.id_pedido
+        JOIN tb_clientes c ON p.id_cliente = c.id_cliente
+        WHERE p.estado_pedido = "Finalizado";';
+        $params = array();
+        return Database::getRows($sql, $params);
+    }
+
+    public function pedidosPendientes()
+    {
+        $sql = 'SELECT p.id_pedido, dp.cantidad_pedido, c.nombre_cliente, p.fecha_pedido, p.fecha_entrega, p.estado_pedido, dp.precio_pedido 
+        FROM tb_pedidos p
+        JOIN tb_detalles_pedidos dp ON p.id_pedido = dp.id_pedido
+        JOIN tb_clientes c ON p.id_cliente = c.id_cliente
+        WHERE p.estado_pedido = "Pendiente";';
+        $params = array();
+        return Database::getRows($sql, $params);
     }
 }
 ?>
