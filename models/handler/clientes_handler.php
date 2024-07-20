@@ -85,7 +85,8 @@ class ClienteHandler
         return Database::executeRow($sql, $params);
     }
 
-    public function readProfile(){
+    public function readProfile()
+    {
         $sql = 'SELECT id_cliente, alias_cliente, nombre_cliente, apellido_cliente, correo_cliente, dui_cliente, telefono_cliente, direccion_cliente
                 FROM tb_clientes
                 WHERE id_cliente = ?';
@@ -174,12 +175,11 @@ class ClienteHandler
     {
         $sql = 'SELECT COUNT(*) AS cantidad_clientes, MONTHNAME(fecha_creacion) AS mes_registro
                 FROM tb_clientes
+                GROUP BY mes_registro
+                ORDER BY MONTH(fecha_creacion);
                 WHERE YEAR(fecha_creacion) = YEAR(CURDATE())
                 GROUP BY MONTH(fecha_creacion), MONTHNAME(fecha_creacion)  
-                ORDER BY MONTH(fecha_creacion)';
+                ORDER BY MONTH(fecha_creacion);';
         return Database::getRows($sql);
     }
-
-
-
 }
