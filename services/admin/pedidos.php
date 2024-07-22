@@ -45,8 +45,8 @@ if (isset($_GET['action'])) {
                 }
                 break;
             // Acción para buscar filas.
-            case 'searchRows':
-                if (isset($_POST['search']) && Validator::validateSearch($_POST['search'])) {
+            case 'searchRows'://check[X]
+                if (!Validator::validateSearch($_POST['buscador'])) {
                     $result['error'] = Validator::getSearchError();
                 } elseif ($result['dataset'] = $pedido->searchRows()) {
                     $result['status'] = 1;

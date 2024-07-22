@@ -31,12 +31,16 @@ class PedidoHandler
     public function searchRows()
     {
         $value = '%' . Validator::getSearchValue() . '%';
-        $sql = 'SELECT tb_pedidos.id_pedido, tb_pedidos.fecha_pedido, tb_pedidos.fecha_entrega, tb_clientes.nombre_cliente
-                FROM tb_pedidos
-                INNER JOIN tb_clientes ON tb_pedidos.id_cliente = tb_clientes.id_cliente
-                WHERE tb_pedidos.id_pedido LIKE ?';
-        $params = array($value);
+        $sql = 'SELECT p.id_pedido, dp.cantidad_pedido, c.nombre_cliente, p.fecha_pedido, p.fecha_entrega, p.estado_pedido, dp.precio_pedido 
+        FROM tb_pedidos p
+        JOIN tb_detalles_pedidos dp ON p.id_pedido = dp.id_pedido
+        JOIN tb_clientes c ON p.id_cliente = c.id_cliente
+        WHERE c.nombre_cliente LIKE ? OR p.fecha_pedido LIKE ? OR p.fecha_entrega LIKE ? 
+        OR p.estado_pedido LIKE ? OR dp.precio_pedido LIKE ?
+        ORDER BY c.nombre_cliente';
+        $params = array($value, $value, $value, $value, $value);
         return Database::getRows($sql, $params);
+
     }
 
     public function readAllPedido()
