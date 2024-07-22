@@ -42,6 +42,13 @@ class PedidoHandler
         return Database::getRows($sql, $params);
 
     }
+    public function checkOrderStatus()
+    {
+        $sql = 'SELECT estado_pedido FROM tb_pedidos WHERE id_pedido = ?';
+        $params = array($this->id_pedido);
+        return Database::getRow($sql, $params);
+    }
+
 
     public function readAllPedido()
     {

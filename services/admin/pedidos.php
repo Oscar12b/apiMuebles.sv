@@ -55,6 +55,19 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'No hay coincidencias';
                 }
                 break;
+            case 'checkOrderStatus':
+                if ($pedido->setIdPedido($_POST['id_pedido'])) {
+                    if ($result = $pedido->checkOrderStatus()) {
+                        $result['status'] = 1;
+                        $result['dataset'] = $result;
+                    } else {
+                        $result['error'] = 'No se pudo obtener el estado del pedido';
+                    }
+                } else {
+                    $result['error'] = 'ID de pedido incorrecto';
+                }
+                break;
+
             case 'readPedidoEntrega':
                 if ($result['dataset'] = $pedido->readPedidoEntrega()) {
                     $result['status'] = 1;
