@@ -126,6 +126,33 @@ class ClienteHandler
         return Database::getRows($sql);
     }
 
+    public function readAllClientes()
+    {
+        $sql = 'SELECT id_cliente, nombre_cliente, apellido_cliente, correo_cliente, telefono_cliente, dui_cliente, estado_cliente
+                FROM tb_clientes
+                ORDER BY id_cliente';
+        return Database::getRows($sql);
+    }
+
+    public function readAllClientesActivos()
+    {
+        $sql = 'SELECT id_cliente, nombre_cliente, apellido_cliente, correo_cliente, telefono_cliente, dui_cliente, estado_cliente
+                FROM tb_clientes
+                WHERE estado_cliente = "Activo"
+                ORDER BY id_cliente';
+        return Database::getRows($sql);
+    }
+
+    public function readAllClientesInactivos()
+    {
+        $sql = 'SELECT id_cliente, nombre_cliente, apellido_cliente, correo_cliente, telefono_cliente, dui_cliente, estado_cliente
+                FROM tb_clientes
+                WHERE estado_cliente = "Desactivo"
+                ORDER BY id_cliente';
+        return Database::getRows($sql);
+    }
+
+
     public function readOne()
     {
         $sql = 'SELECT id_cliente, nombre_cliente, apellido_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente, estado_cliente

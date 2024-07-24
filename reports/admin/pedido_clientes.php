@@ -25,7 +25,7 @@ if (isset($_GET['idPedido'])) {
             $pdf->SetTextColor(255, 255, 255); // Color RGB: Blanco
             $pdf->SetDrawColor(0, 0, 0); // Color RGB: Negro
             $pdf->SetLineWidth(.2);
-            $pdf->setFont('Arial', 'B', 12);
+            $pdf->setFont('Arial', 'B', 11);
             // Se imprimen las celdas con los encabezados.
             $pdf->cell(40, 10, 'Mueble', 1, 0, 'C', 1);
             $pdf->cell(25, 10, 'Color', 1, 0, 'C', 1);
@@ -36,7 +36,11 @@ if (isset($_GET['idPedido'])) {
 
             // Se establece la fuente para los datos del pedido.
             $pdf->setFont('Arial', '', 11);
-            $pdf->SetTextColor(0, 0, 0); // Color RGB: Blanco
+            $pdf->SetTextColor(0, 0, 0); // Color RGB: Negro
+
+            // Variable para almacenar el total de la compra.
+            $totalCompra = 0;
+
             // Se recorren los registros fila por fila.
             foreach ($rowPedido as $detalle) {
                 $pdf->cell(40, 10, $pdf->encodeString($detalle['nombre_mueble']), 1, 0, 'C');
@@ -45,7 +49,28 @@ if (isset($_GET['idPedido'])) {
                 $pdf->cell(30, 10, $pdf->encodeString($detalle['nombre_categoria']), 1, 0, 'C');
                 $pdf->cell(25, 10, $detalle['cantidad_pedido'], 1, 0, 'C');
                 $pdf->cell(30, 10, '$' . number_format($detalle['precio'], 2), 1, 1, 'C');
+
+                // Calcular el total para cada item (cantidad * precio).
+                $totalCompra += $detalle['cantidad_pedido'] * $detalle['precio'];
             }
+
+            // Agregar una fila vacía para el espacio.
+            $pdf->cell(190, 10, '', 0, 1, 'C');
+            $pdf->cell(135, 10, '', 0, 0);
+
+            $pdf->SetFillColor(0, 51, 102); // Color RGB: Azul oscuro
+            $pdf->SetTextColor(255, 255, 255); // Color RGB: Blanco
+            $pdf->SetDrawColor(0, 0, 0); // Color RGB: Negro
+            $pdf->SetLineWidth(.2);
+            $pdf->setFont('Arial', 'B', 11);
+            // Agregar una fila para el total de la compra.
+            $pdf->cell(25, 10, 'Total (US)', 1, 0, 'C', 1);
+
+            // Se establece la fuente para los datos del pedido.
+            $pdf->setFont('Arial', '', 11);
+            $pdf->SetFillColor(255);
+            $pdf->SetTextColor(0, 0, 0); // Color RGB: Negro
+            $pdf->cell(30, 10, '$' . number_format($totalCompra, 2), 1, 1, 'C', 1);
 
             // Se llama implícitamente al método footer() y se envía el documento al navegador web.
             $pdf->output('I', 'reporte_pedido_' . $_GET['idPedido'] . '.pdf');
