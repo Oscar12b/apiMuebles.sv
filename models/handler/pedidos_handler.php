@@ -113,7 +113,7 @@ class PedidoHandler
         $params = array($this->id_mueble);
         $data = Database::getRow($sql, $params);
 
-        if ($data['estado'] == 'disponible') {
+        if ($data['estado'] == 'Disponible') {
             return 1;
         } else {
             return 0;

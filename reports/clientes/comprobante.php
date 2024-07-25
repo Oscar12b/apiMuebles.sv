@@ -1,6 +1,6 @@
 <?php
 // Se incluye la clase con las plantillas para generar reportes.
-require_once ('../../helpers/report.php');
+require_once ('../../helpers/report_cliente.php');
 
 // Se instancia la clase para crear el reporte.
 $pdf = new Report;
@@ -18,7 +18,7 @@ if (isset($_GET['idPedido'])) {
         // Se verifica si el pedido existe, de lo contrario se muestra un mensaje.
         if ($rowPedido = $pedido->readAllDetallePedido()) {
             // Se inicia el reporte con el encabezado del documento.
-            $pdf->startReport('Detalle del pedido #' . $_GET['idPedido']);
+            $pdf->startReportCliente('Detalle del pedido #' . $_GET['idPedido']);
 
             // Se establece un color de relleno para los encabezados.
             $pdf->SetFillColor(0, 51, 102); // Color RGB: Azul oscuro
