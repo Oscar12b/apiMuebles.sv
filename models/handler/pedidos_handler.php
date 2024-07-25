@@ -166,9 +166,8 @@ class PedidoHandler
 
     public function updateAmountOrder()
     {
-        $sql = 'CALL actualizar_pedido (?,?,? );
-        ';
-        $params = array($this->cantidad_pedido, $this->id_mueble, $this->id_detalle_pedido );
+        $sql = 'CALL actualizar_pedido (?,?,?);';
+        $params = array($this->cantidad_pedido, $this->id_mueble, $this->id_detalle_pedido);
         return Database::executeRow($sql, $params);
     }
 

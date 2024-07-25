@@ -22,6 +22,7 @@ BEGIN
     DECLARE v_cantidad_pedido_actual INT;
 
     -- Verificar si existe un pedido en proceso para el cliente
+    
     SELECT id_pedido 
     INTO v_id_pedido 
     FROM tb_pedidos 
@@ -62,21 +63,8 @@ BEGIN
         WHERE id_mueble = p_id_mueble AND id_pedido = v_id_pedido;
     END IF;
 
-    -- Actualizar el stock del mueble
-    UPDATE tb_muebles
-    SET stock = stock - p_cantidad_pedido
-    WHERE id_mueble = p_id_mueble;
-
-    -- Verificar si el stock ha llegado a cero
-    IF (SELECT stock FROM tb_muebles WHERE id_mueble = p_id_mueble) = 0 THEN
-        UPDATE tb_muebles
-        SET estado = 'agotado'
-        WHERE id_mueble = p_id_mueble;
-    END IF;
-
 END //
 DELIMITER ;
-
 
 /*-----------------------------------------------------------------------*/
 /*checkpedido basicamente este procedimiento verifica si la cantidad que se va a modificar o ingresar tiene que haber stock para poder 

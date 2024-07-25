@@ -51,8 +51,10 @@ if (isset($_GET['action'])) {
                     if ($disponibilidad == 0) {
                         $result['message'] = 'No hay existencias para completar el pedido';
                     } elseif ($pedidos->addCart()) {
+
                         $result['status'] = 1;
                         $result['message'] = 'Producto agregado al carrito';
+                        $result['error'] = $_POST['cantidad'];
 
                     } else {
                         $result['error'] = 'Ocurrió un problema al agregar el producto al carrito';
@@ -71,15 +73,15 @@ if (isset($_GET['action'])) {
                     $result['error'] = $pedidos->getDataError();
                 } else {
                     // Verificar disponibilidad del stock
-                    $disponibilidad = $pedidos->checkDisponibilidad($_POST['cantidad'], $_POST['idMueble']);
+                    $disponibilidad = $pedidos->checkDisponibilidad($_POST['idMueble'], $_POST['cantidad']);
                     if ($disponibilidad == 0) {
                         $result['status'] = 2;
-                        $result['message'] = 'No hay existencias suficientes' . $disponibilidad . $_POST['cantidad'] . $_POST['idMueble'] ;
+                        $result['message'] = 'No hay existencias suficientes' . $disponibilidad . $_POST['cantidad'] . $_POST['idMueble'];
                     } elseif ($pedidos->updateAmountOrder()) {
                         $result['status'] = 1;
-                        $result['message'] = 'Cantidad actualizada correctamente';
+                        $result['message'] = 'Cantidad actualizada correctamente' . $_POST['cantidad'] . $_POST['idMueble'] . $_POST['idDetalle'];
                     } else {
-                        $result['error'] = 'Ocurrió un problema al actualizar la cantidad';
+                        $result['error'] = 'Ocurrió un problema al actualizar la cantidad' . $_POST['cantidad'] . $_POST['idMueble'] . $_POST['idDetalle'];
                     }
 
                 }
