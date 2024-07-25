@@ -89,6 +89,15 @@ class ProductoHandler
         return Database::getRows($sql);
     }
 
+    public function obtenerDatosVentas()
+    {
+        $sql = 'SELECT m.id_mueble, m.nombre_mueble, nombre_categoria, COUNT(dp.id_detalle_pedido) AS ventas, SUM(dp.precio_pedido) AS ganancias 
+                FROM tb_muebles m
+                INNER JOIN tb_detalles_pedidos dp ON m.id_mueble = dp.id_mueble
+                INNER JOIN tb_categorias c ON m.id_categoria = c.id_categoria 
+                GROUP BY m.id_mueble, m.nombre_mueble';
+        return Database::getRows($sql);
+    }
 
 
     public function readOne()
