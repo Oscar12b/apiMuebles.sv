@@ -139,7 +139,7 @@ class AdministradorHandler
     //metodos para rellenar la tabla de clientes papapapapapapapapaappaapap
     public function readAllCliente()
     {
-        $sql = 'SELECT id_cliente, nombre_cliente, correo_cliente, telefono_cliente, estado_cliente 
+        $sql = 'SELECT id_cliente, nombre_cliente, apellido_cliente, correo_cliente, telefono_cliente, estado_cliente 
         FROM tb_clientes 
         ORDER BY nombre_cliente;';
         return Database::getRows($sql);

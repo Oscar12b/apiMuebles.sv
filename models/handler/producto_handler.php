@@ -77,6 +77,18 @@ class ProductoHandler
         return Database::getRows($sql);
     }
 
+    public function readAllMuebles()
+    {
+        $sql = 'SELECT id_mueble, nombre_mueble, precio, estado, stock, nombre_categoria, nombre_material 
+                FROM tb_muebles 
+                INNER JOIN tb_categorias 
+                ON tb_muebles.id_categoria = tb_categorias.id_categoria 
+                INNER JOIN tb_materiales 
+                ON tb_muebles.id_material = tb_materiales.id_material;';
+
+        return Database::getRows($sql);
+    }
+
 
 
     public function readOne()

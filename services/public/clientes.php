@@ -36,6 +36,14 @@ if (isset($_GET['action'])) {
                 }
                 break;
 
+            case 'readAllClientes':
+                if ($result['dataset'] = $cliente->readAllClientes()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'No hay pedidos disponibles';
+                }
+                break;
+
             case 'getUser':
                 if (isset($_SESSION['aliasCliente'])) {
                     $result['status'] = 1;
@@ -155,6 +163,14 @@ if (isset($_GET['action'])) {
                     $result['message'] = 'Autenticación correcta';
                 } else {
                     $result['error'] = 'Credenciales incorrectas';
+                }
+                break;
+
+            case 'grafic':
+                if ($result['dataset'] = $cliente->grafic()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'Ocurrió un problema al leer el perfil';
                 }
                 break;
             default:

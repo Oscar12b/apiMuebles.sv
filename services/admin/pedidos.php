@@ -25,7 +25,7 @@ if (isset($_GET['action'])) {
                 break;
             //Acción para rellenar la tabla principal del modal de pedidos.
             case 'readAllDetallePedido'://check [X]
-                if (!$pedido->setIdPedido($_POST['id_pedido'])) {
+                if (!$pedido->setIdPedido($_POST['idPedido'])) {
                     $result['error'] = $pedido->getDataError();
                 } elseif ($result['dataset'] = $pedido->readAllDetallePedido()) {
                     $result['status'] = 1;
@@ -45,14 +45,55 @@ if (isset($_GET['action'])) {
                 }
                 break;
             // Acción para buscar filas.
-            case 'searchRows':
-                if (isset($_POST['search']) && Validator::validateSearch($_POST['search'])) {
+            case 'searchRows'://check[X]
+                if (!Validator::validateSearch($_POST['buscador'])) {
                     $result['error'] = Validator::getSearchError();
                 } elseif ($result['dataset'] = $pedido->searchRows()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
                 } else {
                     $result['error'] = 'No hay coincidencias';
+                }
+                break;
+            case 'checkOrderStatus':
+                if ($pedido->setIdPedido($_POST['id_pedido'])) {
+                    if ($result = $pedido->checkOrderStatus()) {
+                        $result['status'] = 1;
+                        $result['dataset'] = $result;
+                    } else {
+                        $result['error'] = 'No se pudo obtener el estado del pedido';
+                    }
+                } else {
+                    $result['error'] = 'ID de pedido incorrecto';
+                }
+                break;
+
+            case 'readPedidoEntrega':
+                if ($result['dataset'] = $pedido->readPedidoEntrega()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'No hay pedidos disponibles';
+                }
+                break;
+            case 'readPrecioTotal':
+                if ($result['dataset'] = $pedido->readPrecioTotal()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'No hay pedidos disponibles';
+                }
+                break;
+            case 'readCantidadMuebles':
+                if ($result['dataset'] = $pedido->readCantidadMuebles()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'No hay pedidos disponibles';
+                }
+                break;
+            case 'topPedido':
+                if ($result['dataset'] = $pedido->topPedido()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'No hay pedidos disponibles';
                 }
                 break;
             default:

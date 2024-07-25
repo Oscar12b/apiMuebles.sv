@@ -59,6 +59,14 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'No existen productos registrados';
                 }
                 break;
+            case 'readAllMuebles'://check[X]
+                if ($result['dataset'] = $producto->readAllMuebles()) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
+                } else {
+                    $result['error'] = 'No existen productos registrados';
+                }
+                break;
             case 'readOne'://check[X]
                 if (!$producto->setId($_POST['idMueble'])) {
                     $result['error'] = $producto->getDataError();
