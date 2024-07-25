@@ -6,6 +6,8 @@ require_once '../../models/data/producto_data.php'; // Asegúrate de incluir el 
 try {
     // Instanciar el modelo ProductoData
     $productoData = new ProductoData();
+
+    // Obtener todos los datos de las ventas usando el método obtenerDatosVentas
     $datosVentas = $productoData->obtenerDatosVentas();
 
     // Verificar si se obtuvieron resultados
