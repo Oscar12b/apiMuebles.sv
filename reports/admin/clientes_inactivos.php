@@ -22,10 +22,10 @@ try {
     $pdf->startReport('Reporte de clientes inactivos');
 
     // Encabezados de la tabla en el reporte PDF
-    $pdf->SetFillColor(0, 51, 102); // Color RGB: Azul oscuro
-    $pdf->SetTextColor(255, 255, 255); // Color RGB: Blanco
-    $pdf->SetDrawColor(0, 0, 0); // Color RGB: Negro
-    $pdf->SetLineWidth(.2);
+    $pdf->setFillColor(0, 51, 102); // Color RGB: Azul oscuro
+    $pdf->setTextColor(255, 255, 255); // Color RGB: Blanco
+    $pdf->setDrawColor(0, 0, 0); // Color RGB: Negro
+    $pdf->setLineWidth(.2);
     $pdf->setFont('Arial', 'B', 11);
     $pdf->cell(10, 10, '#', 1, 0, 'C', 1);
     $pdf->cell(23, 10, 'Nombre', 1, 0, 'C', 1);
@@ -37,7 +37,7 @@ try {
 
     // Se establece la fuente para los datos de los pedidos.
     $pdf->setFont('Arial', '', 10);
-    $pdf->SetTextColor(0, 0, 0); // Color RGB: Negro
+    $pdf->setTextColor(0, 0, 0); // Color RGB: Negro
 
     // Recorrer los datos de pedidos obtenidos y agregar filas al reporte PDF
     foreach ($clientes as $cliente) {
