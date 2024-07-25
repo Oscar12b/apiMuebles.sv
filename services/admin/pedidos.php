@@ -96,6 +96,13 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'No hay pedidos disponibles';
                 }
                 break;
+            case 'estimacion':
+                if ($result['dataset'] = $pedido->estimacion()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'No hay pedidos disponibles';
+                }
+                break;
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
         }

@@ -286,6 +286,13 @@ class PedidoHandler
         return Database::getRows($sql);
     }
 
+
+    public function estimacion()
+    {
+        $sql = 'CALL PredictMonthlySales();';
+        return Database::getRows($sql);
+    }
+
     /*
      *   Métodos para generar reportes.
      */
