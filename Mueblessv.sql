@@ -80,7 +80,7 @@ CREATE TABLE tb_productos_semanales (
 
 CREATE TABLE tb_pedidos(
     id_pedido INT AUTO_INCREMENT PRIMARY KEY,
-    estado_pedido ENUM ('Pendiente','Finalizado') DEFAULT 'Pendiente',
+    estado_pedido ENUM ('Pendiente','Finalizado','En proceso') DEFAULT 'Pendiente',
     fecha_pedido DATE DEFAULT NOW(),
     fecha_entrega DATE,
     direccion_pedido VARCHAR(80),
