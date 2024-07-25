@@ -147,7 +147,7 @@ class ClienteHandler
     {
         $sql = 'SELECT id_cliente, nombre_cliente, apellido_cliente, correo_cliente, telefono_cliente, dui_cliente, estado_cliente
                 FROM tb_clientes
-                WHERE estado_cliente = "Desactivo"
+                WHERE estado_cliente = "Inactivo"
                 ORDER BY id_cliente';
         return Database::getRows($sql);
     }

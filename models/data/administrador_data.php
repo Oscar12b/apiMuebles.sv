@@ -105,7 +105,7 @@ class AdministradorData extends AdministradorHandler
 
     public function setIdEstado($value)
     {
-        if ($value == 'Activo' || $value == 'Desactivo') {
+        if ($value == 'Activo' || $value == 'Inactivo') {
             $this->estadoCliente = $value;
             return true;
         } else {
