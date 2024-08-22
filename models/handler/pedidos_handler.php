@@ -1,7 +1,7 @@
 <?php
 // Se incluye la clase para trabajar con la base de datos.
-require_once ('../../helpers/database.php');
-require_once ('../../helpers/validator.php');
+require_once('../../helpers/database.php');
+require_once('../../helpers/validator.php');
 
 /*
  *  Clase para manejar el comportamiento de los datos de la tabla pedidos.
@@ -158,6 +158,18 @@ class PedidoHandler
 
     }
 
+
+    public function readhistory()
+    {
+        $sql = 'SELECT p.id_pedido, c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido, d.precio_pedido, d.cantidad_pedido
+                FROM tb_clientes c
+                INNER JOIN tb_pedidos p ON c.id_cliente = p.id_cliente
+                INNER JOIN tb_detalles_pedidos d ON p.id_pedido = d.id_pedido
+                WHERE c.id_cliente = ?
+                GROUP BY p.id_pedido';
+        $params = array($_SESSION['idCliente']);
+        return Database::getRows($sql, $params);
+    }
 
 
     //----------fUNCION PARA CABIAR LA CANTIDAD DE UN DETALLE PEDIDO DE UN MMUEBLE-------------------
