@@ -1,6 +1,6 @@
 <?php
 // Se incluye la clase para trabajar con la base de datos.
-require_once ('../../helpers/database.php');
+require_once('../../helpers/database.php');
 /*
  *	Clase para manejar el comportamiento de los datos de la tabla PRODUCTO.
  */
@@ -67,12 +67,33 @@ class ProductoHandler
 
     public function readAll()
     {
-        $sql = 'SELECT id_mueble,imagen,nombre_mueble,precio,estado,stock,nombre_categoria,nombre_material 
-                FROM tb_muebles 
-                INNER JOIN tb_categorias 
-                ON tb_muebles.id_categoria = tb_categorias.id_categoria 
-                INNER JOIN tb_materiales 
-                ON tb_muebles.id_material = tb_materiales.id_material;';
+        $sql = 'SELECT 
+                    m.id_mueble,
+                    m.imagen,
+                    m.nombre_mueble,
+                    m.precio,
+                    m.estado,
+                    m.stock,
+                    c.nombre_categoria,
+                    mat.nombre_material,
+                    IFNULL(v.promedio_valoracion, 0) AS promedio_valoracion
+                FROM 
+                    tb_muebles m
+                INNER JOIN 
+                    tb_categorias c ON m.id_categoria = c.id_categoria
+                INNER JOIN 
+                    tb_materiales mat ON m.id_material = mat.id_material
+                LEFT JOIN (
+                    SELECT 
+                        dp.id_mueble,
+                        ROUND(AVG(v.valoracion), 2) AS promedio_valoracion
+                    FROM 
+                        tb_valoraciones v
+                    INNER JOIN 
+                        tb_detalles_pedidos dp ON v.id_detalle_pedido = dp.id_detalle_pedido
+                    GROUP BY 
+                        dp.id_mueble
+                ) v ON m.id_mueble = v.id_mueble;';
 
         return Database::getRows($sql);
     }
