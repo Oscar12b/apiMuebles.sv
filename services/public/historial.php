@@ -15,6 +15,7 @@ if (isset($_GET['action'])) {
         $result['session'] = 1;
 
         switch ($_GET['action']) {
+
             case 'readhistory':
                 if ($result['dataset'] = $pedido->readhistory()) {
                     $result['status'] = 1;
@@ -24,6 +25,7 @@ if (isset($_GET['action'])) {
                 }
                 break;
                 ;
+
             case 'searchRows':
                 if (!Validator::validateSearch($_POST['search'])) {
                     $result['error'] = Validator::getSearchError();

@@ -124,7 +124,7 @@ if (isset($_GET['action'])) {
                 break;
 
             case 'readhistory':
-                if ($result['dataset'] = $pedido->readhistory()) {
+                if ($result['dataset'] = $pedidos->readhistory()) {
                     $result['status'] = 1;
                     $result['message'] = '';
                 } else {
