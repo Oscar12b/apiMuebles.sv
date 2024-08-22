@@ -2,7 +2,7 @@
 /*------------------------PROCEDIMIENTOS ALAMACENADOS--------------------*/
 use railway;
 
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'contraseña';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';
 FLUSH PRIVILEGES;
 
 
