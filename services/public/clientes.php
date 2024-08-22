@@ -1,6 +1,6 @@
 <?php
 // Se incluye la clase del modelo.
-require_once ('../../models/data/clientes_data.php');
+require_once('../../models/data/clientes_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
@@ -111,12 +111,44 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'Ocurrió un problema al leer el perfil';
                 }
                 break;
+
+
+
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
         }
     } else {
         // Se compara la acción a realizar cuando el cliente no ha iniciado sesión.
         switch ($_GET['action']) {
+
+            case 'changePass':
+                $_POST = Validator::validateForm($_POST);
+                if (
+                    !$cliente->setClave($_POST['claveCliente']) or
+                    !$cliente->setCorreo($_POST['correoCliente'])
+                ) {
+                    $result['error'] = $cliente->getDataError();
+                } elseif ($_POST['claveCliente'] != $_POST['confirmarClave']) {
+                    $result['error'] = 'Contraseñas diferentes';
+                } elseif ($cliente->changePass()) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Contraseña cambiada correctamente';
+                } else {
+                    $result['error'] = 'Ocurrió un problema al cambiar la contraseña';
+                }
+                break;
+
+            case 'recoverPass':
+                $_POST = Validator::validateForm($_POST);
+                if (!$cliente->setCorreo($_POST['correoCliente'])) {
+                    $result['error'] = $cliente->getDataError();
+                } elseif ($result['username'] = $cliente->verifiedEmail()) {
+                    $result['message'] = 'Correo verificado correctamente';
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'Correo no registrado';
+                }
+                break;
 
             case 'signUp':
                 $_POST = Validator::validateForm($_POST);

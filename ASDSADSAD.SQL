@@ -66,31 +66,34 @@ BEGIN
 END //
 DELIMITER ;
 
+
 /*-----------------------------------------------------------------------*/
 /*checkpedido basicamente este procedimiento verifica si la cantidad que se va a modificar o ingresar tiene que haber stock para poder 
 realizarse ademas de serivir para eliminar un producto por ejemplo*/
 
 DELIMITER //
+
 CREATE PROCEDURE checkDisponibilidad(IN p_id_detalle INT, IN p_cantidad INT)
 BEGIN
-    DECLARE v_cantidad_detalle INT;
+    DECLARE v_stock INT;
 
-    -- Obtener la cantidad actual del detalle del pedido para el mueble específico
-   SELECT cantidad_pedido 
-	INTO v_cantidad_detalle 
-    FROM tb_detalles_pedidos 
-    WHERE id_detalle_pedido = p_id_detalle
+    -- Obtener el stock del mueble correspondiente al detalle del pedido
+    SELECT m.stock 
+    INTO v_stock 
+    FROM tb_detalles_pedidos dp
+    INNER JOIN tb_muebles m ON dp.id_mueble = m.id_mueble
+    WHERE dp.id_detalle_pedido = p_id_detalle
     LIMIT 1;
 
-    -- Comparar la cantidad pasada como parámetro con la cantidad del detalle del pedido
-    IF p_cantidad > v_cantidad_detalle THEN
-		 SELECT 0 as disponibilidad;
+    -- Comparar la cantidad pasada como parámetro con el stock del mueble
+    IF p_cantidad <= v_stock THEN
+        SELECT 1 AS disponibilidad; -- Indica que no hay suficiente stock
     ELSE
-        SELECT 1 as disponibilidad;
+        SELECT 0 AS disponibilidad; -- Indica la cantidad disponible
     END IF;
 END //
-DELIMITER ;
 
+DELIMITER ;
 
 /*-----------------------------------------------------------------------*/
 /*Procedimietno almacenado para eliminar un registro y restaurar el stock del mueble*/
@@ -157,31 +160,42 @@ END //
 DELIMITER ;
 
 
-
 /**************************************************************************/
 /*------------------------TRIGGER------------------------*/
 /**/
 DROP TRIGGER IF EXISTS trg_update_stock_after_update;
 
 DELIMITER //
-
 CREATE TRIGGER trg_update_stock_after_update
 AFTER UPDATE ON tb_detalles_pedidos
 FOR EACH ROW
 BEGIN
     DECLARE diff INT;
+    DECLARE new_cantidad_p INT;
+    DECLARE old_cantidad_p INT;
 
-    -- Calcular la diferencia entre la nueva cantidad y la cantidad antigua
-    IF (NEW.cantidad_pedido < OLD.cantidad_pedido) THEN
-        SET diff = OLD.cantidad_pedido - NEW.cantidad_pedido;
+    SET new_cantidad_p = NEW.cantidad_pedido;
+    SET old_cantidad_p = OLD.cantidad_pedido;
+
+    -- Dependiendo del valor de entrada de la cantidad_pedido se calcula la diferencia
+    IF new_cantidad_p > old_cantidad_p THEN
+        -- Se calcula cuánto se le tiene que restar al stock
+        SET diff = new_cantidad_p - old_cantidad_p;
+        
+        -- Actualizar el stock en la tabla tb_muebles
+        UPDATE tb_muebles
+        SET stock = stock - diff
+        WHERE id_mueble = NEW.id_mueble;
+      
     ELSE
-        SET diff = NEW.cantidad_pedido - OLD.cantidad_pedido;
+        -- Se calcula cuánto se le tiene que agregar al stock
+        SET diff = old_cantidad_p - new_cantidad_p;
+        
+        -- Actualizar el stock en la tabla tb_muebles
+        UPDATE tb_muebles
+        SET stock = stock + diff
+        WHERE id_mueble = NEW.id_mueble;
     END IF;
-
-    -- Actualizar el stock en la tabla tb_muebles
-    UPDATE tb_muebles
-    SET stock = stock - diff
-    WHERE id_mueble = NEW.id_mueble;
 
     -- Verificar si el stock ha llegado a cero y actualizar el estado
     IF (SELECT stock FROM tb_muebles WHERE id_mueble = NEW.id_mueble) = 0 THEN
@@ -194,10 +208,11 @@ BEGIN
         WHERE id_mueble = NEW.id_mueble;
     END IF;
 END //
-
 DELIMITER ;
 
-
+SELECT TRIGGER_NAME, EVENT_MANIPULATION, EVENT_OBJECT_TABLE, ACTION_STATEMENT, ACTION_TIMING
+FROM INFORMATION_SCHEMA.TRIGGERS
+WHERE TRIGGER_SCHEMA = 'Mueblessv';
 
 
 

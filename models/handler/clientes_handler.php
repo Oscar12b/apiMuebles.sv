@@ -1,6 +1,6 @@
 <?php
 // Se incluye la clase para trabajar con la base de datos.
-require_once ('../../helpers/database.php');
+require_once('../../helpers/database.php');
 /*
  *  Clase para manejar el comportamiento de los datos de la tabla administrador.
  */
@@ -207,5 +207,21 @@ class ClienteHandler
             ORDER BY MONTH(fecha_creacion);
             ';
         return Database::getRows($sql);
+    }
+
+    public function verifiedEmail()
+    {
+        $sql = 'SELECT alias_cliente FROM tb_clientes  WHERE correo_cliente = ?';
+        $params = array($this->correo);
+        return Database::getRow($sql, $params);
+    }
+
+    public function changePass()
+    {
+        $sql = 'UPDATE tb_clientes
+                SET clave_cliente = ?
+                WHERE correo_cliente = ?';
+        $params = array($this->clave, $this->correo);
+        return Database::executeRow($sql, $params);
     }
 }

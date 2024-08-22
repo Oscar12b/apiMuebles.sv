@@ -50,6 +50,8 @@ class ClienteData extends ClienteHandler
         }
     }
 
+    
+
     public function setNombre($value, $min = 3, $max = 30)
     {
         if (!Validator::validateAlphabetic($value)) {

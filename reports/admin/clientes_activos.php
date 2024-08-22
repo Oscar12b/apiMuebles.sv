@@ -12,7 +12,7 @@ try {
 
     // Verificar si se obtuvieron resultados
     if (!$cliente) {
-        throw new Exception('No hay clientes disponibles');
+         throw new Exception('No hay clientes disponibles');
     }
 
     // Se instancia la clase para crear el reporte PDF.
