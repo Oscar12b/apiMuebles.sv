@@ -9,17 +9,17 @@ $DATABASE = getenv('DB_DATABASE') ?? 'Mueblessv';
 $USERNAME = getenv('DB_USER') ?? 'muebles';
 $PASSWORD = getenv('DB_PASS') ?? '1234';
 
-
+/*
 // Definir constantes con los valores obtenidos.
 define('SERVER', $SERVER);
 define('DATABASE', $DATABASE);
 define('USERNAME', $USERNAME);
 define('PASSWORD', $PASSWORD);
+*/
 
-/*
 define('SERVER', 'localhost');
 define('DATABASE', 'Mueblessv');
 define('USERNAME', 'muebles');
 define('PASSWORD', '1234');
-*/
+
 ?>
