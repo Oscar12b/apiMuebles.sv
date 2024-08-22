@@ -1,6 +1,10 @@
 /**************************************************************************/
 /*------------------------PROCEDIMIENTOS ALAMACENADOS--------------------*/
-use Mueblessv;
+use railway;
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'contraseña';
+FLUSH PRIVILEGES;
+
 
 DROP PROCEDURE IF EXISTS agregar_detalle_pedido;
 DROP PROCEDURE IF EXISTS checkDisponibilidad;
