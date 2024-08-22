@@ -4,19 +4,31 @@ USE Mueblessv;
 
 CREATE TABLE tb_clientes (
     id_cliente INT AUTO_INCREMENT PRIMARY KEY,
-    alias_cliente VARCHAR (30) NOT NULL,
-	clave_cliente VARCHAR (60) NOT NULL,
+    alias_cliente VARCHAR(30) NOT NULL,
+    clave_cliente VARCHAR(60) NOT NULL,
     nombre_cliente VARCHAR(60) NOT NULL,
     apellido_cliente VARCHAR(60) NOT NULL,
     dui_cliente VARCHAR(10) NOT NULL UNIQUE,
-	telefono_cliente VARCHAR(9) NOT NULL UNIQUE,
+    telefono_cliente VARCHAR(9) NOT NULL UNIQUE,
     direccion_cliente VARCHAR(80) NOT NULL,
     estado_cliente ENUM('Activo', 'Inactivo') DEFAULT 'Activo' NOT NULL,
     correo_cliente VARCHAR(60) NOT NULL UNIQUE,
-    fecha_creacion DATE DEFAULT NOW(),
+    fecha_creacion DATE,
     CONSTRAINT CHK_tbclientes_correo CHECK (correo_cliente REGEXP '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$'),
     CONSTRAINT CHK_tbclientes_dui CHECK (dui_cliente REGEXP '^[0-9]{8}-[0-9]{1}$')
 );
+
+DELIMITER //
+
+CREATE TRIGGER before_insert_tb_clientes
+BEFORE INSERT ON tb_clientes
+FOR EACH ROW
+BEGIN
+    SET NEW.fecha_creacion = CURDATE();
+END //
+
+DELIMITER ;
+
 
 
 CREATE TABLE tb_administradores (
@@ -80,15 +92,29 @@ CREATE TABLE tb_productos_semanales (
 
 CREATE TABLE tb_pedidos(
     id_pedido INT AUTO_INCREMENT PRIMARY KEY,
-    estado_pedido ENUM ('Pendiente','Finalizado','En proceso') DEFAULT 'Pendiente',
-    fecha_pedido DATE DEFAULT NOW(),
+    estado_pedido ENUM('Pendiente','Finalizado','En proceso') DEFAULT 'Pendiente',
+    fecha_pedido DATE,
     fecha_entrega DATE,
     direccion_pedido VARCHAR(80),
     id_cliente INT, 
     CONSTRAINT FK_tbclientes_tbpedidos
     FOREIGN KEY (id_cliente)
     REFERENCES tb_clientes(id_cliente)
-); 
+);
+
+DELIMITER //
+
+CREATE TRIGGER before_insert_tb_pedidos
+BEFORE INSERT ON tb_pedidos
+FOR EACH ROW
+BEGIN
+    IF NEW.fecha_pedido IS NULL THEN
+        SET NEW.fecha_pedido = CURDATE();
+    END IF;
+END //
+
+DELIMITER ;
+
 
 CREATE TABLE tb_detalles_pedidos (
 	
