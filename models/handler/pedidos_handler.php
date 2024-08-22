@@ -304,8 +304,8 @@ class PedidoHandler
         JOIN tb_colores c ON mu.id_color = c.id_color
         JOIN tb_materiales m ON mu.id_material = m.id_material
         JOIN tb_categorias cat ON mu.id_categoria = cat.id_categoria
-        WHERE dp.id_pedido = ?;';
-        $params = array($this->id_pedido);
+        WHERE dp.id_pedido = ? AND dp.id_cliente;';
+        $params = array($this->id_pedido, $_SESSION['idCliente']);
         return Database::getRows($sql, $params);
     }
 
