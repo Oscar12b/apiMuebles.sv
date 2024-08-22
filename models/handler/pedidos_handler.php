@@ -194,12 +194,12 @@ class PedidoHandler
     //-------------INICIO DE LOS METODOS PARA EL HISTORIAL DE PEDIDOS-----------------------------------
     public function readhistory()
     {
-        $sql = 'SELECT p.id_pedido, c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido, d.precio_pedido, d.cantidad_pedido
-                FROM tb_clientes c
-                INNER JOIN tb_pedidos p ON c.id_cliente = p.id_cliente
-                INNER JOIN tb_detalles_pedidos d ON p.id_pedido = d.id_pedido
-                WHERE c.id_cliente = ?
-                GROUP BY p.id_pedido;';
+        $sql = 'SELECT p.id_pedido, c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido, SUM(d.precio_pedido) AS total_precio_pedido, SUM(d.cantidad_pedido) AS total_cantidad_pedido
+            FROM tb_clientes c
+            INNER JOIN tb_pedidos p ON c.id_cliente = p.id_cliente
+            INNER JOIN tb_detalles_pedidos d ON p.id_pedido = d.id_pedido
+            WHERE c.id_cliente = ?
+            GROUP BY p.id_pedido, c.nombre_cliente, c.apellido_cliente, p.fecha_pedido, p.estado_pedido;';
         $params = array($_SESSION['idCliente']);
         return Database::getRows($sql, $params);
     }
