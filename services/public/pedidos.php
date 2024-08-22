@@ -132,6 +132,17 @@ if (isset($_GET['action'])) {
                 }
                 break;
 
+            case 'readAllDetallePedido':
+                $_POST = Validator::validateForm($_POST);
+                if (!$pedidos->setIdPedido($_POST['idPedido'])) {
+                    $result['error'] = $pedidos->getDataError();
+                } elseif (($result['dataset'] = $pedidos->readDetallesPedidos()) && ($result['estado'] = $pedidos->readEstadoPedido())) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'No hay detalles de pedidos disponibles';
+                }
+                break;
+
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
         }
