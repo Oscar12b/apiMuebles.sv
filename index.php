@@ -1,9 +1,6 @@
 <?php
 // Cargar el archivo de configuración
 require 'helpers/config.php';
-require 'helpers/database.php';
-require 'helpers/validator.php';
-require 'helpers/report.php';
 
 // Obtener la ruta solicitada
 $requestUri = $_SERVER['REQUEST_URI'];
