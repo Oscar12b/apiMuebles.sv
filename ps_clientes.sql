@@ -2,8 +2,23 @@
 /*------------------------PROCEDIMIENTOS ALAMACENADOS--------------------*/
 use railway;
 
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';
-FLUSH PRIVILEGES;
+INSERT INTO `tb_categorias` (`id_categoria`, `nombre_categoria`) VALUES
+(2, 'comedor'),
+(1, 'sala');
+
+INSERT INTO `tb_colores` (`id_color`, `nombre_color`) VALUES
+(2, 'amarillo'),
+(1, 'rojo');
+
+INSERT INTO `tb_materiales` (`id_material`, `nombre_material`) VALUES
+(2, 'madera'),
+(1, 'melamina');
+
+INSERT INTO `tb_muebles` (`id_mueble`, `nombre_mueble`, `descripcion_mueble`, `precio`, `precio_antiguo`, `estado`, `stock`, `id_categoria`, `id_color`, `id_material`, `id_administrador`, `imagen`) VALUES
+(1, 'mueble de sala ', 'es un mueble muy bueno compreloooo', 12.01, 0.00, 'Disponible', 12, 2, 2, 2, 1, '66c6c614eadfd.png'),
+(2, 'mueble pero muy', 'esta mucho mejor ganga comprelo no tengo dinero comprelo', 12.01, 0.00, 'Disponible', 52, 2, 1, 2, 1, '66c6c63fa1e28.png'),
+(3, 'mueble pero mej', 'este mueble esta mucho mejor que los otros dinerrrooooo', 13.01, 0.00, 'Disponible', 62, 2, 2, 2, 1, '66c6c67817767.png');
+
 
 
 DROP PROCEDURE IF EXISTS agregar_detalle_pedido;
