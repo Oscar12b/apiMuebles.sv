@@ -198,8 +198,7 @@ class PedidoHandler
                 FROM tb_clientes c
                 INNER JOIN tb_pedidos p ON c.id_cliente = p.id_cliente
                 INNER JOIN tb_detalles_pedidos d ON p.id_pedido = d.id_pedido
-                WHERE c.id_cliente = ?
-                GROUP BY p.id_pedido';
+                WHERE c.id_cliente = ?';
         $params = array($_SESSION['idCliente']);
         return Database::getRows($sql, $params);
     }
