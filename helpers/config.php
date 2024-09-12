@@ -14,7 +14,7 @@ $PASSWORD = getenv('DB_PASS') ?? '1234';
 define('SERVER', $SERVER);
 define('DATABASE', $DATABASE);
 define('USERNAME', $USERNAME);
-define('PASSWORD', $PASSWORD);
+define('PASSWORD', value: $PASSWORD);
 
 /*
 define('SERVER', 'localhost');
